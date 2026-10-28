@@ -1,0 +1,735 @@
+{
+ "run_id": "20261028T082755Z",
+ "suite": "jobscout-agent",
+ "suite_version": 1,
+ "suite_sha256": "177eef3cf512",
+ "target": {
+  "type": "jobscout-agent",
+  "repo": "jobscout-mcp",
+  "repo_sha": "7255001",
+  "cassette": "jobscout-agent-2026-10.json.gz",
+  "cassette_mode": "auto",
+  "model": "ollama:gemma4:12b",
+  "max_turns": 6
+ },
+ "judge": "ollama:gemma4:12b",
+ "started_at": "2026-10-28T08:27:55+00:00",
+ "duration_s": 244.9,
+ "environment": {
+  "python": "3.12.16",
+  "platform": "Windows-11"
+ },
+ "summary": {
+  "cases": 8,
+  "passed": 8,
+  "pass_rate": 1.0,
+  "task_success_rate": 1.0,
+  "tool_recall_mean": 1.0,
+  "tool_precision_mean": 1.0,
+  "judge_mean": 5.0,
+  "latency_p50_ms": 24091.2,
+  "latency_p95_ms": 34506.4,
+  "tokens_total": 33974,
+  "tokens_mean": 4246.8,
+  "cost_usd_total": 0.0,
+  "judge_tokens_total": 13654,
+  "errors": 0
+ },
+ "cases": [
+  {
+   "id": "market-skills-and-pay",
+   "tags": [
+    "market"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "calls market_snapshot",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "never calls rank_jobs_for_me",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "at most 3 tool calls",
+     "passed": true,
+     "detail": "1 calls",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "34846 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "3803 tokens",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 3.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The answer accurately reflects the data provided in the tool output, including specific skill percentages (Python 48%, LLMs 42%, etc.), salary midpoints (EUR €132k, USD $225k), and specific company counts. It correctly identifies the remote work percentage and avoids inventing any information.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 1420,
+     "output_tokens": 78
+    },
+    "latency_ms": 8257.0,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "For AI Engineer roles in Europe, the current market shows a high demand for both core machine learning expertise and modern generative AI implementation skills.\n\n### **Key Skills in Demand**\nThe most frequently requested skills across current postings include:\n*   **Core AI & LLMs:** **LLMs** (42%), **AI Agents** (42%), and **Machine Learning** (36%) are the primary focus areas.\n*   **Programming Languages:** **Python** is the dominant language (48%), followed by **TypeScript** (35%), **Rust** (18%), and **Go** (18%).\n*   **Infrastructure & DevOps:** **AWS** (26%), **Kubernetes** (20%), and **CI/CD** (20%) are frequently required for deploying models at scale.\n*   **Frontend/Fullstack:** Interestingly, a significant number of roles also ask for **React** (31%) and **Next.js** (16%), suggesting a trend toward \"Full-stack AI\" roles where engineers build the end-to-end user experience.\n*   **Data & Systems:** **System Design** (32%), **SQL** (20%), and **PostgreSQL** (15%) remain foundational requirements.\n\n### **Salary Insights**\nFor the 28% of postings that disclose salary information, the annualized midpoints are:\n*   **EUR:** Median of **€132,000** (with the middle half ranging from €107k to €139k).\n*   **USD:** Median of **$225,000** (with the middle half ranging from $150k to $230k).\n\n### **Remote Work Trends**\nThe market for these roles in Europe is highly flexible, with **99%** of the identified postings offering remote work options.\n\n### **Top Hiring Companies**\nSeveral companies are currently showing multiple openings for AI-related roles in this region, including:\n*   **Lemon.io** (9 openings)\n*   **Ashby** (4 openings)\n*   **Canonical** (3 openings)\n*   **Nebius** (3 openings)\n*   **RevenueCat** (3 openings)",
+    "tool_calls": [
+     {
+      "name": "market_snapshot",
+      "args": {
+       "location": "Europe",
+       "query": "AI engineer"
+      },
+      "ok": true,
+      "output_preview": "Market snapshot for \"AI engineer\" in Europe: 95 postings.\n\nRemote: 99% of postings that say (94 remote, 1 on-site).\n\nMost requested skills (share of postings):\n- Python: 48% (46)  [language]\n- LLMs: 42% (40)  [ai]\n- AI agents: 42% (40)  [ai]\n- Machine learning: 36% (34)  [ai]\n- TypeScript: 35% (33)  [language]\n- System design: 32% (30)  [practice]\n- React: 31% (29)  [frontend]\n- AWS: 26% (25)  [infra]\n- Node.js: 24% (23)  [backend]\n- SQL: 20% (19)  [language]\n- CI/CD: 20% (19)  [infra]\n- Kubernetes: 20% (19)  [infra]\n- JavaScript: 19% (18)  [language]\n- Rust: 18% (17)  [language]\n- Go: 18% (17)  [language]\n- GCP: 16% (15)  [infra]\n- Claude: 16% (15)  [ai]\n- Next.js: 16% (15)  [frontend]\n- C++: 16% (15)  [language]\n- PostgreSQL: 15% (14)  [data]\n\nSalaries, annualised range midpoints (28% of postings publish one):\n- USD: median $225k, middle half $150k to $230k (n=17)\n- EUR: median €132k, middle half €107k to €139k (n=10)\n\nCompanies with several open postings:\n- Lemon.io: 9\n- Ashby: 4\n- Canonical: 3\n- Nebius: 3\n- RevenueCat: 3\n- Phantom: 3\n- Cribl: 2\n- Jumio: 2\n\nBy source:\nRemotive (remote jobs): 3\nArbeitnow (Europe): 9\nHacker News 'Who is hiring?': 23\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 9\nJobicy (remote, Spain/Europe): 27\nRemote OK (remote jobs): 2\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 15\nWorking Nomads (remote jobs): 7"
+     }
+    ],
+    "usage": {
+     "input_tokens": 3295,
+     "output_tokens": 508
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 34845.8,
+    "turns": 2,
+    "data": {
+     "tool_names": [
+      "market_snapshot"
+     ],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "recent-remote-python",
+   "tags": [
+    "search",
+    "arguments"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'regex': '\\\\[[a-z]+:[^\\\\]]+\\\\]'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "calls search_jobs",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "at most 2 tool calls",
+     "passed": true,
+     "detail": "1 calls",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "29776 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "5073 tokens",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 3.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The answer accurately lists several remote Python jobs from the provided tool evidence, including specific companies (Nebius, Descript, Carrot, etc.), required skills, and posting IDs. It correctly identifies the remote nature of the roles and uses the user's language.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 2695,
+     "output_tokens": 64
+    },
+    "latency_ms": 13664.8,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "I found several remote Python jobs posted in the last week. Here are some of the highlights:\n\n### Data & Machine Learning\n*   **Senior ML Engineer (Agentic Search)** at **Nebius** (Europe)\n    *   **Skills:** Python, C++, LLMs, AI agents, Embeddings, Evals, Hugging Face, Machine learning\n    *   [source:jobicy:157433]\n*   **Senior ML Engineer (AI Research)** at **Nebius** (Europe, Israel)\n    *   **Skills:** Python, LLMs, AI agents, Machine learning, CI/CD\n    *   [source:jobicy:157434]\n*   **Senior Machine Learning Engineer, LLM Inference Optimization** at **Nebius** (Europe, Israel)\n    *   **Skills:** Python, LLMs, AI agents, PyTorch, Machine learning, Node.js\n    *   [source:jobicy:157431]\n*   **Lead Data Scientist, Product** at **Descript** (Anywhere in the World)\n    *   **Skills:** Python, SQL, OpenAI API, Spark\n    *   [source:weworkremotely:descript-lead-data-scientist-product]\n*   **Python Developer (with Machine Learning knowledge)** at **DevGrid** (Worldwide)\n    *   **Skills:** Python, SQL, Machine learning, Django, Flask, Redis, Pandas, AWS\n    *   [source:himalayas:companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575]\n\n### Engineering & Infrastructure\n*   **Sr. Data Engineer** at **Carrot** (Anywhere in the World)\n    *   **Skills:** Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n    *   [source:weworkremotely:carrot-sr-data-engineer]\n*   **Senior Cloud / DevOps Engineer** at **Rockstardevelopers GmbH** (Berlin/Remote)\n    *   **Skills:** Python, Claude, Kafka, AWS, GCP, Azure, Docker, Kubernetes\n    *   [source:arbeitnow:senior-cloud-devops-engineer-aws-kubernetes-openshift-stuttgart-311937]\n*   **Senior Site Reliability Engineer (SRE)** at **Makersite GmbH** (Remote)\n    *   **Skills:** Python, AWS, Azure, Terraform\n    *   [source:arbeitnow:remote-senior-site-reliability-engineer-sre-berlin-347745]\n*   **Senior Database Reliability Engineer I** at **Storyblok** (Germany/Austria/UK)\n    *   **Skills:** Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n    *   [source:weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n\n### Other Roles\n*   **Business Intelligence Analyst (Contractor)** at **Doximity** (Anywhere in the World)\n    *   **Skills:** Python, SQL, Pandas\n    *   [source:weworkremotely:doximity-business-intelligence-analyst-contractor]\n*   **Technical Account Manager** at **Camunda** (Remote - DACH or Nordics regions)\n    *   **Skills:** Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n    *   [source:arbeitnow:remote-technical-account-manager-dach-470630] | [source:arbeitnow:remote-technical-account-manager-nordics-345486]",
+    "tool_calls": [
+     {
+      "name": "search_jobs",
+      "args": {
+       "max_age_days": 7,
+       "query": "Python",
+       "remote_only": true
+      },
+      "ok": true,
+      "output_preview": "121 postings match \"Python\", remote only. Showing the 15 newest.\n\nBy source:\nRemotive (remote jobs): 0\nArbeitnow (Europe): 15\nHacker News 'Who is hiring?': 0\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 13\nJobicy (remote, Spain/Europe): 74\nRemote OK (remote jobs): 4\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 13\nWorking Nomads (remote jobs): 2\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Lead Data Scientist, Product  [weworkremotely:descript-lead-data-scientist-product]\n  Descript | Anywhere in the World | remote | today\n  skills: Python, SQL, OpenAI API, Spark\n  https://weworkremotely.com/remote-jobs/descript-lead-data-scientist-product\n- Business Intelligence Analyst (Contractor)  [weworkremotely:doximity-business-intelligence-analyst-contractor]\n  Doximity | Anywhere in the World | remote | today\n  skills: Python, SQL, Pandas\n  https://weworkremotely.com/remote-jobs/doximity-business-intelligence-analyst-contractor\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federal\n- Technical Account Manager- DACH  [arbeitnow:remote-technical-account-manager-dach-470630]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-dach-470630\n- Technical Account Manager- Nordics  [arbeitnow:remote-technical-account-manager-nordics-345486]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-nordics-345486\n- Service Desk/System Administrator  [jobicy:151895]\n  Playson | Ukraine | remote | today\n  skills: Python, AWS, GCP, Azure, Linux\n  https://jobicy.com/jobs/151895-service-desk-system-administrator\n- Python Developer (with Machine Learning knowledge)  [himalayas:companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575]\n  DevGrid | Worldwide | remote | today\n  skills: Python, SQL, Machine learning, Django, Flask, Redis, Pandas, AWS\n  https://himalayas.app/companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575?utm_source=api\n- Senior Site Reliability Engineer (SRE) m/f/x  [arbeitnow:remote-senior-site-reliability-engineer-sre-berlin-347745]\n  Makersite GmbH | Remote job | remote | today\n  skills: Python, AWS, Azure, Terraform\n  https://www.arbeitnow.com/jobs/companies/makersite-gmbh/remote-senior-site-reliability-engineer-sre-berlin-347745\n- Senior Cloud / DevOps Engineer – AWS, Kubernetes/OpenShift (m/w/d)  [arbeitnow:senior-cloud-devops-engineer-aws-kubernetes-openshift-stuttgart-311937]\n  Rockstardevelopers GmbH | Berlin | remote | today\n  skills: Python, Claude, Kafka, AWS, GCP, Azure, Docker, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/rockstardevelopers-gmbh/senior-cloud-devops-engineer-aws-kubernetes-openshift-stuttgart-311937\n- Senior Swift & SwiftUI Developer  [workingnomads:1976189]\n  Lemon.io | Europe, LATAM, APAC, the U.S., Canada | remote | today\n  skills: Python, TypeScript, JavaScript, Java, Go, Rust, C#, C++\n  https://www.workingnomads.com/job/go/1976189/\n- Senior ML Engineer (AI Research)  [jobicy:157434]\n  Nebius | Europe, Israel | remote | today\n  skills: Python, LLMs, AI agents, Machine learning, CI/CD\n  https://jobicy.com/jobs/157434-senior-ml-engineer-ai-research\n- Senior ML Engineer (Agentic Search)  [jobicy:157433]\n  Nebius | Europe | remote | today\n  skills: Python, C++, LLMs, AI agents, Embeddings, Evals, Hugging Face, Machine learning\n  https://jobicy.com/jobs/157433-senior-ml-engineer-agentic-search\n- Senior Machine Learning Engineer, LLM Inference Optimization  [jobicy:157431]\n  Nebius | Europe, Israel | remote | today\n  skills: Python, LLMs, AI agents, PyTorch, Machine learning, Node.js\n  https://jobicy.com/jobs/157431-senior-machine-learning-engineer-llm-inference-optimization"
+     }
+    ],
+    "usage": {
+     "input_tokens": 4213,
+     "output_tokens": 860
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 29776.1,
+    "turns": 2,
+    "data": {
+     "tool_names": [
+      "search_jobs"
+     ],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "rank-against-my-skills",
+   "tags": [
+    "ranking",
+    "arguments"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "calls rank_jobs_for_me",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "at most 3 tool calls",
+     "passed": true,
+     "detail": "1 calls",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "25615 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "4820 tokens",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 3.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The answer correctly ranks the jobs based on the provided fit scores and accurately identifies the most frequently missing skills (System design, Kubernetes, CI/CD, etc.) directly from the tool's 'Missing most often' summary. It uses the user's language and provides concrete details from the evidence.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 2389,
+     "output_tokens": 72
+    },
+    "latency_ms": 12646.8,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Based on your skills (**Python, FastAPI, Docker, PostgreSQL, AWS**), here is a ranking of backend engineer roles that best match your profile, followed by an analysis of what you are missing most often.\n\n### Top Ranked Matches\n1. **Backend Software Engineer** [hn:49925489]\n   - **Company:** Enveritas\n   - **Fit:** 80/100\n   - **Matched Skills:** Python, PostgreSQL, AWS, Docker\n   - **Missing:** Terraform\n2. **Senior Backend Engineer** [arbeitnow:remote-senior-backend-engineer-paris-287438]\n   - **Company:** Payflows\n   - **Fit:** 57/100\n   - **Matched Skills:** Python, FastAPI, PostgreSQL, AWS\n   - **Missing:** Rust, AI agents, System design\n3. **Staff Platform/Backend Engineer (Python/ Django)** [himalayas:companies/mts-moose-tech-solutions/jobs/staff-platform-backend-engineer-python-django]\n   - **Company:** MTS Moose Tech Solutions\n   - **Fit:** 50/100\n   - **Matched Skills:** Python, AWS, Docker\n   - **Missing:** Django, Kubernetes, CI/CD\n\n---\n\n### What you are missing most often\nTo move into more senior or specialized backend roles, the following skills appear most frequently in the job descriptions for your target roles:\n\n*   **System Design (Most Frequent):** This is the most common gap. Many senior roles require a deep understanding of architecture, scalability, and distributed systems.\n*   **Kubernetes:** While you have Docker experience, many companies are looking for orchestration experience with Kubernetes.\n*   **CI/CD:** Experience with automated deployment pipelines (GitHub Actions, Jenkins, etc.) is a standard requirement for \"Staff\" or \"Senior\" levels.\n*   **AI/LLM Integration:** There is a growing trend of backend roles requiring experience with **LLMs**, **AI agents**, and **Prompt Engineering**.\n*   **Infrastructure as Code (IaC):** Specifically **Terraform**, which often pairs with your existing AWS knowledge.\n*   **Secondary Languages:** Several high-paying roles also look for **Rust** or **Go** alongside Python.",
+    "tool_calls": [
+     {
+      "name": "rank_jobs_for_me",
+      "args": {
+       "query": "backend engineer",
+       "remote_only": true,
+       "skills": [
+        "Python",
+        "FastAPI",
+        "Docker",
+        "PostgreSQL",
+        "AWS"
+       ]
+      },
+      "ok": true,
+      "output_preview": "Ranked 120 of 135 postings for \"backend engineer\" against: Python, FastAPI, Docker, PostgreSQL, AWS.\nMissing most often in the best matches: System design (20), Kubernetes (12), CI/CD (9), Java (9), LLMs (8), GCP (7), Terraform (6), AI agents (6).\n\n- Backend Software Engineer  [hn:49925489]\n  Enveritas (YC S18, non-profit) | Remote (Global) | remote | $135k-155k/year | 26 days ago\n  skills: Python, PostgreSQL, AWS, Docker, Terraform\n  fit 80/100 | you have: Python, PostgreSQL, AWS, Docker | missing: Terraform\n  https://news.ycombinator.com/item?id=49925489\n- Senior Backend Engineer  [arbeitnow:remote-senior-backend-engineer-paris-287438]\n  Payflows | Remote job | remote | 1 day ago\n  skills: Python, Rust, AI agents, FastAPI, PostgreSQL, AWS, System design\n  fit 57/100 | you have: Python, FastAPI, PostgreSQL, AWS | missing: Rust, AI agents, System design\n  https://www.arbeitnow.fr/jobs/companies/payflows/remote-senior-backend-engineer-paris-287438\n- Staff Platform/Backend Engineer (Python/ Django)  [himalayas:companies/mts-moose-tech-solutions/jobs/staff-platform-backend-engineer-python-django]\n  MTS Moose Tech Solutions | United States | remote | $150k-200k/year | 9 days ago\n  skills: Python, Django, AWS, Docker, Kubernetes, CI/CD\n  fit 50/100 | you have: Python, AWS, Docker | missing: Django, Kubernetes, CI/CD\n  https://himalayas.app/companies/mts-moose-tech-solutions/jobs/staff-platform-backend-engineer-python-django?utm_source=api\n- Senior Backend Engineer  [himalayas:companies/honorcare/jobs/senior-backend-engineer]\n  Honor | United States | remote | $160k-180k/year | 13 days ago\n  skills: Python, Java, AWS, System design\n  fit 50/100 | you have: Python, AWS | missing: Java, System design\n  https://himalayas.app/companies/honorcare/jobs/senior-backend-engineer?utm_source=api\n- Senior Backend Engineer, Core DevOps: Container Registry  [himalayas:companies/gitlab-com/jobs/senior-backend-engineer-core-devops-container-registry]\n  GitLab | United Kingdom | remote | 17 days ago\n  skills: AI agents, Prompt engineering, Docker\n  fit 50/100 | you have: Docker | missing: AI agents, Prompt engineering\n  https://himalayas.app/companies/gitlab-com/jobs/senior-backend-engineer-core-devops-container-registry?utm_source=api\n- Senior Backend Engineer (Go/PostgreSQL) - Remote  [himalayas:companies/clanx/jobs/senior-backend-engineer-go-postgresql-remote]\n  ClanX | United States | remote | 100-100k/year | 5 days ago\n  skills: Go, LLMs, AI agents, PostgreSQL, AWS, Docker, System design\n  fit 44/100 | you have: PostgreSQL, AWS, Docker | missing: Go, LLMs, AI agents, System design\n  https://himalayas.app/companies/clanx/jobs/senior-backend-engineer-go-postgresql-remote?utm_source=api\n- Senior Software Engineer, Backend (Consumer - Growth Foundations)  [himalayas:companies/coinbase/jobs/senior-software-engineer-backend-consumer-growth-foundations]\n  Coinbase | Canada | remote | 191k CAD/year | 21 days ago\n  skills: LLMs, Machine learning, PostgreSQL, MongoDB, AWS, Docker, Kubernetes, System design\n  fit 38/100 | you have: PostgreSQL, AWS, Docker | missing: LLMs, Machine learning, MongoDB, Kubernetes, System design\n  https://himalayas.app/companies/coinbase/jobs/senior-software-engineer-backend-consumer-growth-foundations?utm_source=api\n- Senior Backend Engineer, Medical Data Pipeline (Python + Rust)  [hn:50095921]\n  NeuralFrame | REMOTE (US only, US time zones; no visa sponsorship) | remote | $170k-210k/year | 13 days ago\n  skills: Python, Rust, SQL, PostgreSQL, MongoDB, Airflow, AWS, Terraform\n  fit 33/100 | you have: Python, PostgreSQL, AWS | missing: Rust, SQL, MongoDB, Airflow, Terraform, CI/CD, Testing\n  https://news.ycombinator.com/item?id=50095921\n- Backend Engineers, Sr. Software Engineer (Marketing)  [hn:49967489]\n  Close | REMOTE (US) | remote | 22 days ago\n  skills: Python, LLMs, AI agents, MCP, FastAPI, Flask, PostgreSQL, MongoDB\n  fit 33/100 | you have: Python, FastAPI, PostgreSQL | missing: LLMs, AI agents, MCP, Flask, MongoDB, Elasticsearch\n  https://news.ycombinator.com/item?id=49967489\n- Backend Engineer, Developer & End-user Experience Platform  [himalayas:companies/stripe/jobs/backend-engineer-developer-end-user-experience-platform]\n  Stripe | Canada, United States | remote | 18 days ago\n  skills: GraphQL, gRPC, AWS, Docker, Kubernetes, System design\n  fit 33/100 | you have: AWS, Docker | missing: GraphQL, gRPC, Kubernetes, System design\n  https://himalayas.app/companies/stripe/jobs/backend-engineer-developer-end-user-experience-platform?utm_source=api\n\nBy source:\nRemotive (remote jobs): 0\nArbeitnow (Europe): 6\nHacker News 'Who is hiring?': 38\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 30\nJobicy (remote, Spain/Europe): 46\nRemote OK (remote jobs): 7\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 6\nWorking Nomads (remote jobs): 2"
+     }
+    ],
+    "usage": {
+     "input_tokens": 4273,
+     "output_tokens": 547
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 25614.9,
+    "turns": 2,
+    "data": {
+     "tool_names": [
+      "rank_jobs_for_me"
+     ],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "search-then-open-first",
+   "tags": [
+    "multi-step"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "calls search_jobs",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "calls get_job",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "at most 4 tool calls",
+     "passed": true,
+     "detail": "2 calls",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "33876 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "9159 tokens",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 3.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The agent correctly identified the first job from the search results (Sr. Data Engineer at Carrot) and provided the full description as requested. It included specific details like the company name, location, and key skills (Python, dbt, Snowflake, etc.) found in the tool output.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 3710,
+     "output_tokens": 69
+    },
+    "latency_ms": 18825.6,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "The most recent Python job found is for a **Sr. Data Engineer** at **Carrot**.\n\n### **Job Overview**\n*   **Company:** Carrot\n*   **Location:** Remote (Anywhere in the World)\n*   **Salary:** Not published\n*   **Posted:** Today\n*   **Source:** [weworkremotely:carrot-sr-data-engineer]\n\n### **Full Description**\n**About Carrot:**\nCarrot is a leading global fertility and family care platform. They provide clinical guidance and support for millions of members across 195 countries, focusing on everything from pre-pregnancy to menopause.\n\n**The Opportunity:**\nCarrot is looking for a Sr. Data Engineer to lead the evolution, reliability, and scalability of their modern data infrastructure. You will architect, build, and maintain robust, automated data pipelines, orchestrate workflows, and partner with stakeholders to deliver secure, high-quality data solutions. Your work will span the full data lifecycle, including ETL/ELT pipelines, real-time and batch integrations, and automating reporting to reduce technical debt.\n\n**What You’ll Own:**\n*   Architect, build, test, and deploy scalable ETL/ELT pipelines using **Python**, **dbt**, and orchestration tools like **Prefect** and **Airflow**.\n*   Administer and optimize cloud-based platforms including **Snowflake**, **AWS (S3, Redshift)**, and **Google Cloud**.\n*   Orchestrate data workflows with custom scheduling, alerting, and dependency management.\n*   Design secure external data flows via SFTP, Files.com, and APIs.\n*   Automate manual reporting and operational tasks.\n*   Partner with backend engineers to optimize production database schemas.\n*   Strengthen data quality, lineage, governance, and documentation.\n*   Mentor teammates and reinforce best practices in version control and code review.\n\n**About You:**\n*   Expert-level proficiency in **Snowflake**, **dbt**, and **Python**.\n*   Advanced **SQL** skills for complex querying and large-scale data model design.\n*   Proven experience with modern orchestration tools (Prefect, Airflow).\n*   Hands-on experience with AWS and Google Cloud.\n*   Mastery of version control (Git, GitHub) and Jira.\n*   Ability to automate complex manual tasks and thrive in dynamic environments.\n\n**Nice to Have:**\n*   Experience in startup or rapid-growth environments.\n*   Background supporting BI, analytics, and data science teams.",
+    "tool_calls": [
+     {
+      "name": "search_jobs",
+      "args": {
+       "query": "Python"
+      },
+      "ok": true,
+      "output_preview": "402 postings match \"Python\". Showing the 15 newest.\n\nBy source:\nRemotive (remote jobs): 3\nArbeitnow (Europe): 180\nHacker News 'Who is hiring?': 63\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 73\nRemote OK (remote jobs): 13\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 16\nWorking Nomads (remote jobs): 13\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Lead Data Scientist, Product  [weworkremotely:descript-lead-data-scientist-product]\n  Descript | Anywhere in the World | remote | today\n  skills: Python, SQL, OpenAI API, Spark\n  https://weworkremotely.com/remote-jobs/descript-lead-data-scientist-product\n- Business Intelligence Analyst (Contractor)  [weworkremotely:doximity-business-intelligence-analyst-contractor]\n  Doximity | Anywhere in the World | remote | today\n  skills: Python, SQL, Pandas\n  https://weworkremotely.com/remote-jobs/doximity-business-intelligence-analyst-contractor\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federal\n- AI Edge Deployment Engineer  [arbeitnow:ai-edge-deployment-engineer-berlin-181670]\n  Almetra | Onsite Berlin | on-site | €45k-58k/year | today\n  skills: Python, Linux\n  https://www.arbeitnow.com/jobs/companies/almetra/ai-edge-deployment-engineer-berlin-181670\n- Fullstack Engineer  [arbeitnow:fullstack-engineer-paris-15296]\n  Comand Ai | Paris | on-site | today\n  skills: Python, TypeScript, LLMs, LangChain, LangGraph, OpenAI API, Machine learning, FastAPI\n  https://www.arbeitnow.fr/jobs/companies/comand-ai/fullstack-engineer-paris-15296\n- Technical Account Manager- DACH  [arbeitnow:remote-technical-account-manager-dach-470630]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-dach-470630\n- Technical Account Manager- Nordics  [arbeitnow:remote-technical-account-manager-nordics-345486]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-nordics-345486\n- Senior Forward Deployed Engineer (Technical Data Architect)  [arbeitnow:senior-forward-deployed-engineer-technical-data-architect-london-464919]\n  databricks | London | on-site | today\n  skills: Python, TypeScript, JavaScript, Scala, Machine learning, MLOps, Spark, AWS\n  https://www.arbeitnow.co.uk/jobs/companies/databricks/senior-forward-deployed-engineer-technical-data-architect-london-464919\n- Senior EMEA AI Solutions Architect  [arbeitnow:senior-emea-ai-solutions-architect-london-321494]\n  databricks | London | on-site | today\n  skills: Python, SQL, LLMs, AI agents, RAG, OpenAI API, Claude, Machine learning\n  https://www.arbeitnow.co.uk/jobs/companies/databricks/senior-emea-ai-solutions-architect-london-321494\n- Forward Deployed Engineering Manager  [arbeitnow:forward-deployed-engineering-manager-london-50361]\n  databricks | London | on-site | today\n  skills: Python, Scala, LLMs, Machine learning, MLOps, Spark, AWS, GCP\n  https://www.arbeitnow.co.uk/jobs/companies/databricks/forward-deployed-engineering-manager-london-50361\n- Senior Software Engineer - Fullstack  [arbeitnow:senior-software-engineer-fullstack-amsterdam-449365]\n  databricks | Amsterdam | on-site | today\n  skills: Python, JavaScript, Java, Go, C#, C++, Scala, SQL\n  https://www.arbeitnow.nl/jobs/companies/databricks/senior-software-engineer-fullstack-amsterdam-449365\n- Senior Data Engineer - Enterprise Integration & Data Platform (f/m/d)  [arbeitnow:senior-data-engineer-enterprise-integration-data-platform-parsdorf-bavaria-150701]\n  isaraerospace | Parsdorf, Bavaria | on-site | today\n  skills: Python, SQL, OpenAI API, Claude, Machine learning, PostgreSQL, MySQL, Docker\n  https://www.arbeitnow.com/jobs/companies/isaraerospace/senior-data-engineer-enterprise-integration-data-platform-parsdorf-bavaria-150701\n- Lead Full Stack Software Engineer - Internal Platforms (f/m/d)  [arbeitnow:lead-full-stack-software-engineer-internal-platforms-parsdorf-bavaria-277361]\n  isaraerospace | Parsdorf, Bavaria | on-site | today\n  skills: Python, TypeScript, JavaScript, Java, C#, SQL, AI agents, OpenAI API\n  https://www.arbeitnow.com/jobs/companies/isaraerospace/lead-full-stack-software-engineer-internal-platforms-parsdorf-bavaria-277361"
+     },
+     {
+      "name": "get_job",
+      "args": {
+       "id": "weworkremotely:carrot-sr-data-engineer"
+      },
+      "ok": true,
+      "output_preview": "Sr. Data Engineer\nCarrot | Anywhere in the World | remote\nSalary: not published\nPosted: 2026-10-28T07:31:13.000Z | Source: We Work Remotely (remote jobs)\nSkills mentioned: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\nTags: Full-Stack Programming, Full-Time\nApply: https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\nHeadquarters: Remote\n\nAbout Carrot:\n\nCarrot is the leading global fertility and family care platform, built on intelligent care orchestration: the right clinical guidance, at the right moment, in the context of each member’s life. More than a thousand multinational employers, health plans, and health systems trust Carrot to support millions of members across 195 countries – from pre-pregnancy through menopause and major life moments in between. Carrot's comprehensive clinical program delivers industry-leading cost savings for plan sponsors and award-winning experiences and improved outcomes for millions of people worldwide.\n\nCarrot is widely regarded as a defining force in healthcare innovation as a recipient of several top-tier awards, including Fast Company's 'Most Innovative Companies' and CNBC's '100 Barrier Breaking Startups'. The company is regularly cited by leading global outlets — including The Economist, Bloomberg, The Wall Street Journal, NPR, ABC News, and Harvard Business Review — as a leading voice on digital health, the future of work, and family health. Learn more at get-carrot.com.\n\nThe Opportunity\n\nCarrot is seeking a Sr. Data Engineer to lead the evolution, reliability, and scalability of our modern data infrastructure across analytics, reporting, and business intelligence. In this role, you will architect, build, and maintain robust, automated data pipelines, orchestrate workflows, integrate diverse data sources, and partner with stakeholders across the business to deliver secure, compliant, high-quality data solutions.\n\nYour work will span the full data lifecycle, from architecting resilient ETL/ELT pipelines and developing real-time and batch data integrations to automating reporting, reducing technical debt, and enabling advanced analytics. Sr. Data Engineers at Carrot are operational stewards and technical mentors, driving improvements in system maturity, cost efficiency, automation, and collaborative practices.\n\nYou will join our Data Engineering team, which develops and optimizes scalable data pipelines and cloud infrastructure to enable secure, automated reporting and analytics across Carrot. The team collaborates closely with Business Intelligence, Product, Finance, Legal, and Commercial partners to deliver reliable integrations and self-serve solutions that drive business insights and operational efficiency.\n\nWhat You’ll Own\n\nIn this role, you will:\n\n- Architect, build, test, deploy, and maintain scalable, automated ETL/ELT pipelines using Python, dbt, and orchestration tools such as Prefect and Airflow\n\n- Administer and optimize cloud-based data warehouse and lake platforms, including Snowflake, AWS (S3, Redshift), and Google Cloud, integrating new sources and tuning for performance and cost\n\n- Orchestrate data workflows with custom scheduling, alerting, dependency management, monitoring, and error resolution\n\n- Design and maintain secure external data flows through SFTP, Files.com, and APIs, with a focus on reliability and compliance\n\n- Automate manual reporting and operational tasks, building robust, reusable pipeline components that reduce operational overhead\n\n- Partner with backend product engineers to optimize production database schemas with analytics use cases in mind\n\n- Strengthen data quality, lineage, governance, and documentation practices across key data domains\n\n- Mentor teammates and reinforce best practices in version control, code review, and structured workflow management\n\nWhat Success Looks Like\n\nIn your first 12–18 months, you will have:\n\n- Taken end-to-end ownership of core pipelines and integrations, with measurable improvements in reliability, data recency, and cost efficiency\n\n- Automated high-effort manual workflows, reducing operational risk and freeing capacity for higher-value engineering work\n\n- Delivered secure, compliant data integrations that stakeholders across the business trust for decision-making\n\n- Strengthened observability across the platform, including monitoring, alerting, and incident response for critical data workflows\n\n- Established yourself as a technical mentor and a go-to partner for Business Intelligence, Product, and cross-functional teams\n\nAbout You\n\nYou likely have:\n\n- Expert-level proficiency in Snowflake, dbt, and Python for data modeling, transformation, pipeline development, and advanced analytics\n\n- Advanced SQL skills for complex querying, large-scale data model design, and database optimization\n\n- Proven experience architecting, building, testing, deploying, and maintaining scalable, automated ETL/ELT pipelines using modern orchestration tools such as Prefect and Airflow\n\n- Hands-on administration of cloud-based data warehouse and lake platforms, including Snowflake, AWS (S3, Redshift), and Google Cloud\n\n- A strong understanding of secure external data flows through SFTP, Files.com, and APIs, with a focus on reliability and compliance\n\n- Mastery of version control (Git, GitHub) and structured workflow management (Jira) for code review, audit trails, and operational transparency\n\n- A demonstrated ability to automate and simplify complex manual tasks, building robust, reusable pipeline components\n\n- Dependability, adaptability, and a collaborative approach to engineering, thriving in dynamic and ambiguous environments\n\nNice to Have ⭐\n\nWhile not required, we would be especially excited if you bring:\n\n- Hands-on experience in startup or rapid-growth environments, delivering technical solutions under shifting priorities\n\n- A background supporting business intelligence, analytics, and data science teams through large-scale integrations and multi-tenant reporting\n\n- Fam"
+     }
+    ],
+    "usage": {
+     "input_tokens": 8575,
+     "output_tokens": 584
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 33876.1,
+    "turns": 3,
+    "data": {
+     "tool_names": [
+      "search_jobs",
+      "get_job"
+     ],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "which-sources",
+   "tags": [
+    "discovery"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'contains': 'Adzuna'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "calls list_sources",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "never calls search_jobs",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "never calls market_snapshot",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "never calls rank_jobs_for_me",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "10328 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "2963 tokens",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 4.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The answer accurately lists all job boards provided in the tool evidence, correctly categorizing which ones are 'ready' and which one requires an API key (Adzuna). It includes specific details like the types of companies (Greenhouse, Lever, Ashby) and the specific keys needed for Adzuna.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 596,
+     "output_tokens": 73
+    },
+    "latency_ms": 5061.5,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "I can search the following job boards:\n\n**Ready to use:**\n*   **Remotive** (Remote jobs)\n*   **Arbeitnow** (Europe-focused)\n*   **Hacker News** ('Who is hiring?' section)\n*   **Himalayas** (Remote jobs)\n*   **Jobicy** (Remote, Spain/Europe)\n*   **Remote OK** (Remote jobs)\n*   **Company Career Pages** (Greenhouse, Lever, Ashby)\n*   **We Work Remotely** (Remote jobs)\n*   **Working Nomads** (Remote jobs)\n\n**Requires an API key:**\n*   **Adzuna** (Spain and 15+ countries) - Requires `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`.",
+    "tool_calls": [
+     {
+      "name": "list_sources",
+      "args": {},
+      "ok": true,
+      "output_preview": "remotive: Remotive (remote jobs). ready\narbeitnow: Arbeitnow (Europe). ready\nhn: Hacker News 'Who is hiring?'. ready\nadzuna: Adzuna (Spain and 15+ countries). needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com)\nhimalayas: Himalayas (remote jobs). ready\njobicy: Jobicy (remote, Spain/Europe). ready\nremoteok: Remote OK (remote jobs). ready\ncompanies: Company career pages (Greenhouse, Lever, Ashby). ready\nweworkremotely: We Work Remotely (remote jobs). ready\nworkingnomads: Working Nomads (remote jobs). ready"
+     }
+    ],
+    "usage": {
+     "input_tokens": 2772,
+     "output_tokens": 191
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 10327.8,
+    "turns": 2,
+    "data": {
+     "tool_names": [
+      "list_sources"
+     ],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "spanish-request",
+   "tags": [
+    "market",
+    "language"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'regex': '(?i)\\\\b(las|los|ofertas|piden)\\\\b'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "calls market_snapshot",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "at most 3 tool calls",
+     "passed": true,
+     "detail": "1 calls",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "22568 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "3936 tokens",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 3.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The answer accurately summarizes the requested information using only the facts provided in the tool output. It includes specific percentages and categories (Python 41%, TypeScript 29%, AI Agents 23%, etc.) and correctly identifies the remote context. It is written in Spanish as requested.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 1551,
+     "output_tokens": 69
+    },
+    "latency_ms": 8743.5,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Basado en un análisis reciente de las ofertas de empleo para **Ingeniero de Software en remoto**, estas son las tecnologías y habilidades más demandadas actualmente:\n\n### 1. Lenguajes de Programación Principales\n*   **Python:** Es el lenguaje líder, apareciendo en el **41%** de las ofertas.\n*   **TypeScript:** Muy fuerte en el desarrollo web moderno (**29%**).\n*   **Go y Rust:** Están ganando tracción significativa para sistemas de alto rendimiento (**17%** y **14%** respectivamente).\n*   **Java y C++:** Siguen siendo pilares fundamentales en infraestructuras corporativas (**16-17%**).\n\n### 2. Inteligencia Artificial (Tendencia en auge)\nHay un enfoque creciente en la integración de IA en el software:\n*   **AI Agents:** Aparecen en el **23%** de las vacantes.\n*   **LLMs (Modelos de Lenguaje Grande):** Demandados en el **18%** de las ofertas.\n*   **Machine Learning:** Sigue siendo una habilidad base para muchos roles de ingeniería (**16%**).\n\n### 3. Frontend y Backend\n*   **React:** Sigue siendo la biblioteca de frontend dominante (**26%**).\n*   **Node.js:** Es la opción preferida para el backend en entornos JavaScript (**18%**).\n*   **PostgreSQL:** Es la base de datos relacional más solicitada (**19%**).\n\n### 4. Infraestructura y DevOps\nLas empresas buscan ingenieros que entiendan cómo desplegar y escalar aplicaciones:\n*   **AWS:** La plataforma de nube más solicitada (**22%**).\n*   **Kubernetes:** Fundamental para la orquestación de contenedores (**19%**).\n*   **CI/CD:** Conocimientos en integración y despliegue continuo son esenciales (**17%**).\n*   **Linux y Azure:** También mantienen una presencia constante en los requisitos de infraestructura.\n\n### 5. Habilidades de Diseño\n*   **System Design:** No es solo una tecnología, sino una competencia clave solicitada en el **28%** de las vacantes, enfocada en la arquitectura de sistemas escalables.\n\n**Resumen de mercado:** El perfil ideal actual combina un dominio sólido de **Python o TypeScript**, conocimientos en **infraestructura en la nube (AWS/Kubernetes)** y, cada vez más, experiencia trabajando con **agentes de IA y LLMs**.",
+    "tool_calls": [
+     {
+      "name": "market_snapshot",
+      "args": {
+       "query": "software engineer",
+       "remote_only": true
+      },
+      "ok": true,
+      "output_preview": "Market snapshot for \"software engineer\": 232 postings.\n\nRemote: 100% of postings that say (232 remote, 0 on-site).\n\nMost requested skills (share of postings):\n- Python: 41% (96)  [language]\n- TypeScript: 29% (67)  [language]\n- System design: 28% (66)  [practice]\n- React: 26% (60)  [frontend]\n- AI agents: 23% (53)  [ai]\n- AWS: 22% (51)  [infra]\n- Kubernetes: 19% (44)  [infra]\n- PostgreSQL: 19% (43)  [data]\n- LLMs: 18% (42)  [ai]\n- Node.js: 18% (41)  [backend]\n- CI/CD: 17% (40)  [infra]\n- Go: 17% (39)  [language]\n- C++: 17% (39)  [language]\n- JavaScript: 16% (38)  [language]\n- Machine learning: 16% (38)  [ai]\n- Java: 16% (37)  [language]\n- Linux: 15% (34)  [infra]\n- Rust: 14% (33)  [language]\n- SQL: 14% (32)  [language]\n- Azure: 13% (29)  [infra]\n\nSalaries, annualised range midpoints (37% of postings publish one):\n- USD: median $182k, middle half $145k to $217k (n=62)\n- EUR: median €132k, middle half €120k to €149k (n=12)\n- GBP: median £114k, middle half £77k to £136k (n=5)\n- CAD: median 158k CAD, middle half 158k CAD to 184k CAD (n=3)\n\nCompanies with several open postings:\n- Canonical: 14\n- Lemon.io: 10\n- Ashby: 6\n- Grafana Labs: 5\n- Mozilla: 4\n- Proxify: 4\n- Nebius: 3\n- RevenueCat: 3\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 12\nHacker News 'Who is hiring?': 65\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 58\nJobicy (remote, Spain/Europe): 56\nRemote OK (remote jobs): 13\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 13\nWorking Nomads (remote jobs): 10"
+     }
+    ],
+    "usage": {
+     "input_tokens": 3366,
+     "output_tokens": 570
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 22567.5,
+    "turns": 2,
+    "data": {
+     "tool_names": [
+      "market_snapshot"
+     ],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "nothing-found-no-invention",
+   "tags": [
+    "grounding"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'not_regex': '\\\\[[a-z]+:\\\\d+\\\\]'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "calls search_jobs",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "at most 3 tool calls",
+     "passed": true,
+     "detail": "1 calls",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "9412 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "2883 tokens",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 3.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The agent correctly identified that no jobs were found for the specific query and stated this plainly. It followed the rubric by not inventing postings and offering to search for the components separately.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 504,
+     "output_tokens": 47
+    },
+    "latency_ms": 4387.9,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "I couldn't find any job postings for an \"underwater basket weaving quantum engineer.\" It's likely that this specific combination of skills is either extremely niche or a humorous request!\n\nIf you are looking for roles in either **Quantum Engineering** or **Basket Weaving** separately, please let me know and I can search for those individually.",
+    "tool_calls": [
+     {
+      "name": "search_jobs",
+      "args": {
+       "query": "\"underwater basket weaving\" \"quantum engineer\""
+      },
+      "ok": true,
+      "output_preview": "0 postings match \"\"underwater basket weaving\" \"quantum engineer\"\". Showing the 0 newest.\n\nBy source:\nRemotive (remote jobs): 0\nArbeitnow (Europe): 0\nHacker News 'Who is hiring?': 0\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 0\nJobicy (remote, Spain/Europe): 0\nRemote OK (remote jobs): 0\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 0\nWorking Nomads (remote jobs): 0\n"
+     }
+    ],
+    "usage": {
+     "input_tokens": 2784,
+     "output_tokens": 99
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 9412.3,
+    "turns": 2,
+    "data": {
+     "tool_names": [
+      "search_jobs"
+     ],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "no-tool-needed",
+   "tags": [
+    "restraint"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "at most 0 tool calls",
+     "passed": true,
+     "detail": "0 calls",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 120000 ms",
+     "passed": true,
+     "detail": "4484 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "tokens ≤ 40000",
+     "passed": true,
+     "detail": "1337 tokens",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The answer correctly identifies the difference between remote and hybrid work in a single sentence, accurately reflecting that remote is away from the office and hybrid is a split between home and office.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 270,
+     "output_tokens": 47
+    },
+    "latency_ms": 1614.2,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "A remote job allows you to work from any location (typically from home), while a hybrid job requires you to split your time between working from home and working in a physical office.",
+    "tool_calls": [],
+    "usage": {
+     "input_tokens": 1300,
+     "output_tokens": 37
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 4484.3,
+    "turns": 1,
+    "data": {
+     "tool_names": [],
+     "tool_errors": 0
+    },
+    "error": null
+   }
+  }
+ ]
+}

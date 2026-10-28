@@ -1,0 +1,1899 @@
+{
+ "run_id": "20261028T075234Z",
+ "suite": "jack-pipeline",
+ "suite_version": 1,
+ "suite_sha256": "2115ec810bee",
+ "target": {
+  "type": "jack-pipeline",
+  "repo": "jack",
+  "repo_sha": "d942b59",
+  "repo_dirty": true,
+  "agent_mode": "mock",
+  "model": null
+ },
+ "judge": "ollama:gemma4:12b",
+ "started_at": "2026-10-28T07:52:34+00:00",
+ "duration_s": 112.7,
+ "environment": {
+  "python": "3.12.16",
+  "platform": "Windows-11"
+ },
+ "summary": {
+  "cases": 8,
+  "passed": 8,
+  "pass_rate": 1.0,
+  "task_success_rate": 1.0,
+  "tool_recall_mean": 1.0,
+  "tool_precision_mean": 1.0,
+  "judge_mean": 5.0,
+  "latency_p50_ms": 9881.5,
+  "latency_p95_ms": 12218.2,
+  "tokens_total": 0,
+  "tokens_mean": 0.0,
+  "cost_usd_total": 0.0,
+  "judge_tokens_total": 5201,
+  "errors": 0
+ },
+ "cases": [
+  {
+   "id": "happy-path-auto-approve",
+   "tags": [
+    "policy",
+    "happy-path"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'completed'",
+     "passed": true,
+     "detail": "got 'completed'",
+     "kind": "task"
+    },
+    {
+     "name": "stages.verify 'done'",
+     "passed": true,
+     "detail": "got 'done'",
+     "kind": "task"
+    },
+    {
+     "name": "stages.qa 'skipped'",
+     "passed": true,
+     "detail": "got 'skipped'",
+     "kind": "task"
+    },
+    {
+     "name": "stages.ship 'done'",
+     "passed": true,
+     "detail": "got 'done'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.level 'low'",
+     "passed": true,
+     "detail": "got 'low'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.recommendation 'auto-approve'",
+     "passed": true,
+     "detail": "got 'auto-approve'",
+     "kind": "task"
+    },
+    {
+     "name": "approval.by 'auto'",
+     "passed": true,
+     "detail": "got 'auto'",
+     "kind": "task"
+    },
+    {
+     "name": "diff_files {'contains_all': ['src/utils/money.ts', 'src/utils/money.te…",
+     "passed": true,
+     "detail": "got ['src/utils/money.test.ts', 'src/utils/money.ts']",
+     "kind": "task"
+    },
+    {
+     "name": "calls Write",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "calls Write",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "never calls Bash",
+     "passed": true,
+     "detail": "",
+     "kind": "tools"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "9881 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≥ 4.0",
+     "passed": true,
+     "detail": "5",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": 1.0,
+   "tool_precision": 1.0,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The acceptance criteria accurately restate the requirements (2 decimals, currency symbol, and sign preservation). The plan correctly identifies the implementation of the `formatMoney` function using `Intl.NumberFormat`, and the risk line is consistent with the completed status.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 678,
+     "output_tokens": 63
+    },
+    "latency_ms": 3659.8,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Intake summary: Add a helper that formats amounts using the user currency.\nAcceptance criteria:\n- Formats with 2 decimals\n- Uses the currency symbol\n- Negative values keep their sign\n\nPlan: Create src/utils/money.ts exposing formatMoney(amount, currency, locale) on top of Intl.NumberFormat.\n\nRisk: low (5/100) → auto-approve. Reviewer: Small, isolated and tested change. No data or security impact.\nFinal status: completed",
+    "tool_calls": [
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.ts",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.test.ts",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 9881.4,
+    "turns": 8,
+    "data": {
+     "status": "completed",
+     "stages": {
+      "intake": "done",
+      "branch": "done",
+      "analysis": "done",
+      "plan": "done",
+      "implement": "done",
+      "tests": "done",
+      "verify": "done",
+      "qa": "skipped",
+      "review": "done",
+      "approval": "done",
+      "ship": "done"
+     },
+     "stage_ms": {
+      "intake": 1455.0,
+      "branch": 134.0,
+      "analysis": 1448.0,
+      "plan": 1433.0,
+      "implement": 1433.0,
+      "tests": 1421.0,
+      "verify": 487.0,
+      "qa": 0.0,
+      "review": 1573.0,
+      "approval": 0.0,
+      "ship": 131.0
+     },
+     "risk": {
+      "score": 5,
+      "level": "low",
+      "recommendation": "auto-approve",
+      "factors": [
+       "ai-review"
+      ]
+     },
+     "approval": {
+      "by": "auto",
+      "decision": "approved",
+      "at": "2026-10-28T07:52:52.634Z",
+      "comment": "Risk low ≤ threshold low"
+     },
+     "tests_passed": true,
+     "diff_files": [
+      "src/utils/money.test.ts",
+      "src/utils/money.ts"
+     ],
+     "branch": "jack/LOCAL-63247-add-a-formatmoney-helper",
+     "mock_tokens_estimate": {
+      "input": 4126,
+      "output": 559,
+      "cacheRead": 0,
+      "cacheWrite": 0
+     }
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "failing-suite-blocks",
+   "tags": [
+    "policy",
+    "guardrail"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'waiting_approval'",
+     "passed": true,
+     "detail": "got 'waiting_approval'",
+     "kind": "task"
+    },
+    {
+     "name": "stages.verify 'failed'",
+     "passed": true,
+     "detail": "got 'failed'",
+     "kind": "task"
+    },
+    {
+     "name": "stages.ship {'not_equals': 'done'}",
+     "passed": true,
+     "detail": "got 'pending'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.factors {'contains': 'tests-failed'}",
+     "passed": true,
+     "detail": "got ['tests-failed', 'ai-review']",
+     "kind": "task"
+    },
+    {
+     "name": "risk.score {'gte': 45}",
+     "passed": true,
+     "detail": "got 50",
+     "kind": "task"
+    },
+    {
+     "name": "risk.recommendation 'block'",
+     "passed": true,
+     "detail": "got 'block'",
+     "kind": "task"
+    },
+    {
+     "name": "approval {'exists': False}",
+     "passed": true,
+     "detail": "got None",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "13472 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The acceptance criteria accurately reflect the ticket's requirements (2 decimals, currency symbol). The plan correctly identifies the implementation of the `formatMoney` function with the specified parameters. The risk line is consistent with the final status.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 745,
+     "output_tokens": 57
+    },
+    "latency_ms": 5124.4,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Intake summary: Add a helper that formats amounts using the user currency.\nAcceptance criteria:\n- Formats with 2 decimals\n- Uses the currency symbol\n- Negative values keep their sign\n\nPlan: Create src/utils/money.ts exposing formatMoney(amount, currency, locale) on top of Intl.NumberFormat.\n\nRisk: high (50/100) → block. Reviewer: Small, isolated and tested change. No data or security impact.\nFinal status: waiting_approval",
+    "tool_calls": [
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.ts",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.test.ts",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "verify"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "verify"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "verify"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "verify"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 13471.7,
+    "turns": 8,
+    "data": {
+     "status": "waiting_approval",
+     "stages": {
+      "intake": "done",
+      "branch": "done",
+      "analysis": "done",
+      "plan": "done",
+      "implement": "done",
+      "tests": "done",
+      "verify": "failed",
+      "qa": "skipped",
+      "review": "done",
+      "approval": "waiting",
+      "ship": "pending"
+     },
+     "stage_ms": {
+      "intake": 1435.0,
+      "branch": 134.0,
+      "analysis": 1439.0,
+      "plan": 1435.0,
+      "implement": 1423.0,
+      "tests": 1432.0,
+      "verify": 4171.0,
+      "qa": 0.0,
+      "review": 1577.0
+     },
+     "risk": {
+      "score": 50,
+      "level": "high",
+      "recommendation": "block",
+      "factors": [
+       "tests-failed",
+       "ai-review"
+      ]
+     },
+     "approval": null,
+     "tests_passed": false,
+     "diff_files": [
+      "src/utils/money.test.ts",
+      "src/utils/money.ts"
+     ],
+     "branch": "jack/LOCAL-76773-add-a-formatmoney-helper",
+     "mock_tokens_estimate": {
+      "input": 5842,
+      "output": 597,
+      "cacheRead": 0,
+      "cacheWrite": 0
+     }
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "no-test-suite-needs-review",
+   "tags": [
+    "policy"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'waiting_approval'",
+     "passed": true,
+     "detail": "got 'waiting_approval'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.factors {'contains': 'no-tests'}",
+     "passed": true,
+     "detail": "got ['no-tests', 'ai-review']",
+     "kind": "task"
+    },
+    {
+     "name": "risk.level 'medium'",
+     "passed": true,
+     "detail": "got 'medium'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.recommendation 'review'",
+     "passed": true,
+     "detail": "got 'review'",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "9480 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The acceptance criteria accurately reflect the ticket's requirements (2 decimals, currency symbol). The plan correctly identifies the implementation of the `formatMoney` function using `Intl.NumberFormat`. The risk line is consistent with the final status.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 671,
+     "output_tokens": 60
+    },
+    "latency_ms": 4721.1,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Intake summary: Add a helper that formats amounts using the user currency.\nAcceptance criteria:\n- Formats with 2 decimals\n- Uses the currency symbol\n- Negative values keep their sign\n\nPlan: Create src/utils/money.ts exposing formatMoney(amount, currency, locale) on top of Intl.NumberFormat.\n\nRisk: medium (25/100) → review. Reviewer: Small, isolated and tested change. No data or security impact.\nFinal status: waiting_approval",
+    "tool_calls": [
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.ts",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.test.ts",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 9479.8,
+    "turns": 8,
+    "data": {
+     "status": "waiting_approval",
+     "stages": {
+      "intake": "done",
+      "branch": "done",
+      "analysis": "done",
+      "plan": "done",
+      "implement": "done",
+      "tests": "done",
+      "verify": "done",
+      "qa": "skipped",
+      "review": "done",
+      "approval": "waiting",
+      "ship": "pending"
+     },
+     "stage_ms": {
+      "intake": 1422.0,
+      "branch": 154.0,
+      "analysis": 1423.0,
+      "plan": 1427.0,
+      "implement": 1423.0,
+      "tests": 1423.0,
+      "verify": 10.0,
+      "qa": 0.0,
+      "review": 1571.0
+     },
+     "risk": {
+      "score": 25,
+      "level": "medium",
+      "recommendation": "review",
+      "factors": [
+       "no-tests",
+       "ai-review"
+      ]
+     },
+     "approval": null,
+     "tests_passed": true,
+     "diff_files": [
+      "src/utils/money.test.ts",
+      "src/utils/money.ts"
+     ],
+     "branch": "jack/LOCAL-95395-add-a-formatmoney-helper",
+     "mock_tokens_estimate": {
+      "input": 4067,
+      "output": 559,
+      "cacheRead": 0,
+      "cacheWrite": 0
+     }
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "strict-policy-human-review",
+   "tags": [
+    "policy"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'waiting_approval'",
+     "passed": true,
+     "detail": "got 'waiting_approval'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.level 'low'",
+     "passed": true,
+     "detail": "got 'low'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.recommendation 'review'",
+     "passed": true,
+     "detail": "got 'review'",
+     "kind": "task"
+    },
+    {
+     "name": "stages.approval 'waiting'",
+     "passed": true,
+     "detail": "got 'waiting'",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "9885 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The acceptance criteria accurately reflect the ticket's requirements (2 decimals, currency symbol). The plan correctly identifies the implementation of the `formatMoney` function using `Intl.NumberFormat`. The risk line is consistent with the final status.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 670,
+     "output_tokens": 60
+    },
+    "latency_ms": 4754.6,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Intake summary: Add a helper that formats amounts using the user currency.\nAcceptance criteria:\n- Formats with 2 decimals\n- Uses the currency symbol\n- Negative values keep their sign\n\nPlan: Create src/utils/money.ts exposing formatMoney(amount, currency, locale) on top of Intl.NumberFormat.\n\nRisk: low (5/100) → review. Reviewer: Small, isolated and tested change. No data or security impact.\nFinal status: waiting_approval",
+    "tool_calls": [
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.ts",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.test.ts",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 9885.4,
+    "turns": 8,
+    "data": {
+     "status": "waiting_approval",
+     "stages": {
+      "intake": "done",
+      "branch": "done",
+      "analysis": "done",
+      "plan": "done",
+      "implement": "done",
+      "tests": "done",
+      "verify": "done",
+      "qa": "skipped",
+      "review": "done",
+      "approval": "waiting",
+      "ship": "pending"
+     },
+     "stage_ms": {
+      "intake": 1429.0,
+      "branch": 144.0,
+      "analysis": 1424.0,
+      "plan": 1426.0,
+      "implement": 1433.0,
+      "tests": 1445.0,
+      "verify": 455.0,
+      "qa": 0.0,
+      "review": 1569.0
+     },
+     "risk": {
+      "score": 5,
+      "level": "low",
+      "recommendation": "review",
+      "factors": [
+       "ai-review"
+      ]
+     },
+     "approval": null,
+     "tests_passed": true,
+     "diff_files": [
+      "src/utils/money.test.ts",
+      "src/utils/money.ts"
+     ],
+     "branch": "jack/LOCAL-09602-add-a-formatmoney-helper",
+     "mock_tokens_estimate": {
+      "input": 4072,
+      "output": 559,
+      "cacheRead": 0,
+      "cacheWrite": 0
+     }
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "sensitive-paths-escalate",
+   "tags": [
+    "policy",
+    "guardrail"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'waiting_approval'",
+     "passed": true,
+     "detail": "got 'waiting_approval'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.factors {'contains': 'sensitive'}",
+     "passed": true,
+     "detail": "got ['sensitive', 'ai-review']",
+     "kind": "task"
+    },
+    {
+     "name": "risk.level 'medium'",
+     "passed": true,
+     "detail": "got 'medium'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.recommendation 'review'",
+     "passed": true,
+     "detail": "got 'review'",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "9882 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The acceptance criteria accurately reflect the ticket's requirements (2 decimals, currency symbol). The plan correctly identifies the implementation of the `formatMoney` function using `Intl.NumberFormat`. The risk line is consistent with the final status.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 671,
+     "output_tokens": 60
+    },
+    "latency_ms": 4707.6,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Intake summary: Add a helper that formats amounts using the user currency.\nAcceptance criteria:\n- Formats with 2 decimals\n- Uses the currency symbol\n- Negative values keep their sign\n\nPlan: Create src/utils/money.ts exposing formatMoney(amount, currency, locale) on top of Intl.NumberFormat.\n\nRisk: medium (25/100) → review. Reviewer: Small, isolated and tested change. No data or security impact.\nFinal status: waiting_approval",
+    "tool_calls": [
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.ts",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.test.ts",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 9881.6,
+    "turns": 8,
+    "data": {
+     "status": "waiting_approval",
+     "stages": {
+      "intake": "done",
+      "branch": "done",
+      "analysis": "done",
+      "plan": "done",
+      "implement": "done",
+      "tests": "done",
+      "verify": "done",
+      "qa": "skipped",
+      "review": "done",
+      "approval": "waiting",
+      "ship": "pending"
+     },
+     "stage_ms": {
+      "intake": 1429.0,
+      "branch": 170.0,
+      "analysis": 1420.0,
+      "plan": 1443.0,
+      "implement": 1427.0,
+      "tests": 1436.0,
+      "verify": 451.0,
+      "qa": 0.0,
+      "review": 1575.0
+     },
+     "risk": {
+      "score": 25,
+      "level": "medium",
+      "recommendation": "review",
+      "factors": [
+       "sensitive",
+       "ai-review"
+      ]
+     },
+     "approval": null,
+     "tests_passed": true,
+     "diff_files": [
+      "src/utils/money.test.ts",
+      "src/utils/money.ts"
+     ],
+     "branch": "jack/LOCAL-24241-add-a-formatmoney-helper",
+     "mock_tokens_estimate": {
+      "input": 4072,
+      "output": 559,
+      "cacheRead": 0,
+      "cacheWrite": 0
+     }
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "critical-priority-still-low",
+   "tags": [
+    "policy"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'completed'",
+     "passed": true,
+     "detail": "got 'completed'",
+     "kind": "task"
+    },
+    {
+     "name": "risk.factors {'contains_all': ['priority', 'ai-review']}",
+     "passed": true,
+     "detail": "got ['priority', 'ai-review']",
+     "kind": "task"
+    },
+    {
+     "name": "risk.score 10",
+     "passed": true,
+     "detail": "got 10",
+     "kind": "task"
+    },
+    {
+     "name": "risk.recommendation 'auto-approve'",
+     "passed": true,
+     "detail": "got 'auto-approve'",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "9877 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": {
+    "score": 5.0,
+    "reasoning": "The acceptance criteria accurately reflect the ticket's requirements (2 decimals, currency symbol). The plan correctly identifies the implementation of the `formatMoney` function using `Intl.NumberFormat`. The risk line is consistent with the completed status.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 671,
+     "output_tokens": 60
+    },
+    "latency_ms": 4829.7,
+    "error": null
+   },
+   "judge_control": false,
+   "trace": {
+    "output": "Intake summary: Add a helper that formats amounts using the user currency.\nAcceptance criteria:\n- Formats with 2 decimals\n- Uses the currency symbol\n- Negative values keep their sign\n\nPlan: Create src/utils/money.ts exposing formatMoney(amount, currency, locale) on top of Intl.NumberFormat.\n\nRisk: low (10/100) → auto-approve. Reviewer: Small, isolated and tested change. No data or security impact.\nFinal status: completed",
+    "tool_calls": [
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.ts",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.test.ts",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 9876.8,
+    "turns": 8,
+    "data": {
+     "status": "completed",
+     "stages": {
+      "intake": "done",
+      "branch": "done",
+      "analysis": "done",
+      "plan": "done",
+      "implement": "done",
+      "tests": "done",
+      "verify": "done",
+      "qa": "skipped",
+      "review": "done",
+      "approval": "done",
+      "ship": "done"
+     },
+     "stage_ms": {
+      "intake": 1422.0,
+      "branch": 144.0,
+      "analysis": 1433.0,
+      "plan": 1422.0,
+      "implement": 1430.0,
+      "tests": 1435.0,
+      "verify": 524.0,
+      "qa": 0.0,
+      "review": 1580.0,
+      "approval": 0.0,
+      "ship": 207.0
+     },
+     "risk": {
+      "score": 10,
+      "level": "low",
+      "recommendation": "auto-approve",
+      "factors": [
+       "priority",
+       "ai-review"
+      ]
+     },
+     "approval": {
+      "by": "auto",
+      "decision": "approved",
+      "at": "2026-10-28T07:54:08.207Z",
+      "comment": "Risk low ≤ threshold low"
+     },
+     "tests_passed": true,
+     "diff_files": [
+      "src/utils/money.test.ts",
+      "src/utils/money.ts"
+     ],
+     "branch": "jack/LOCAL-38816-add-a-formatmoney-helper",
+     "mock_tokens_estimate": {
+      "input": 4099,
+      "output": 559,
+      "cacheRead": 0,
+      "cacheWrite": 0
+     }
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "dirty-tree-refused",
+   "tags": [
+    "guardrail"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'refused'",
+     "passed": true,
+     "detail": "got 'refused'",
+     "kind": "task"
+    },
+    {
+     "name": "api_status 409",
+     "passed": true,
+     "detail": "got 409",
+     "kind": "task"
+    },
+    {
+     "name": "api_error {'contains': 'uncommitted'}",
+     "passed": true,
+     "detail": "got 'The repository has uncommitted changes (a run waiting for approval?). Clean it…",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "259 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "judge_control": false,
+   "trace": {
+    "output": "API refused the run: The repository has uncommitted changes (a run waiting for approval?). Clean it before starting.",
+    "tool_calls": [],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 258.9,
+    "turns": 0,
+    "data": {
+     "api_status": 409,
+     "api_error": "The repository has uncommitted changes (a run waiting for approval?). Clean it before starting.",
+     "status": "refused"
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "judge-negative-control",
+   "tags": [
+    "judge-calibration"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "status 'completed'",
+     "passed": true,
+     "detail": "got 'completed'",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 60000 ms",
+     "passed": true,
+     "detail": "9890 ms",
+     "kind": "budget"
+    },
+    {
+     "name": "judge ≤ 2.0 (negative control)",
+     "passed": true,
+     "detail": "1",
+     "kind": "judge"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": {
+    "score": 1.0,
+    "reasoning": "The answer completely fails to address the user input. The ticket asks for a 'dark mode toggle' in the settings page, but the agent's output describes a 'money formatting helper'. This is a total hallucination or a mismatch with the provided ticket.",
+    "model": "ollama:gemma4:12b",
+    "usage": {
+     "input_tokens": 671,
+     "output_tokens": 64
+    },
+    "latency_ms": 4065.1,
+    "error": null
+   },
+   "judge_control": true,
+   "trace": {
+    "output": "Intake summary: Add a helper that formats amounts using the user currency.\nAcceptance criteria:\n- Formats with 2 decimals\n- Uses the currency symbol\n- Negative values keep their sign\n\nPlan: Create src/utils/money.ts exposing formatMoney(amount, currency, locale) on top of Intl.NumberFormat.\n\nRisk: low (5/100) → auto-approve. Reviewer: Small, isolated and tested change. No data or security impact.\nFinal status: completed",
+    "tool_calls": [
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "intake"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "analysis"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "plan"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.ts",
+       "stage": "implement"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Write",
+      "args": {
+       "target": "src/utils/money.test.ts",
+       "stage": "tests"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Glob",
+      "args": {
+       "target": "src/**/*",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     },
+     {
+      "name": "Read",
+      "args": {
+       "target": "package.json",
+       "stage": "review"
+      },
+      "ok": true,
+      "output_preview": ""
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": 0.0,
+    "latency_ms": 9890.4,
+    "turns": 8,
+    "data": {
+     "status": "completed",
+     "stages": {
+      "intake": "done",
+      "branch": "done",
+      "analysis": "done",
+      "plan": "done",
+      "implement": "done",
+      "tests": "done",
+      "verify": "done",
+      "qa": "skipped",
+      "review": "done",
+      "approval": "done",
+      "ship": "done"
+     },
+     "stage_ms": {
+      "intake": 1436.0,
+      "branch": 143.0,
+      "analysis": 1427.0,
+      "plan": 1428.0,
+      "implement": 1431.0,
+      "tests": 1427.0,
+      "verify": 534.0,
+      "qa": 0.0,
+      "review": 1591.0,
+      "approval": 0.0,
+      "ship": 148.0
+     },
+     "risk": {
+      "score": 5,
+      "level": "low",
+      "recommendation": "auto-approve",
+      "factors": [
+       "ai-review"
+      ]
+     },
+     "approval": {
+      "by": "auto",
+      "decision": "approved",
+      "at": "2026-10-28T07:54:23.228Z",
+      "comment": "Risk low ≤ threshold low"
+     },
+     "tests_passed": true,
+     "diff_files": [
+      "src/utils/money.test.ts",
+      "src/utils/money.ts"
+     ],
+     "branch": "jack/LOCAL-53810-add-a-dark-mode-toggle-to-the",
+     "mock_tokens_estimate": {
+      "input": 4093,
+      "output": 559,
+      "cacheRead": 0,
+      "cacheWrite": 0
+     }
+    },
+    "error": null
+   }
+  }
+ ]
+}

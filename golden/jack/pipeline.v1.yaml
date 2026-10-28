@@ -1,0 +1,166 @@
+suite: jack-pipeline
+version: 1
+description: >
+  End-to-end checks of jack's delivery pipeline in mock agent mode: real git, real test runs, real risk scorer
+  and approval policy, simulated agents. Expected values follow jack's documented risk rules
+  (failing tests +45, no suite +20, sensitive path +10 per area, critical priority +5, 30% of the AI reviewer's 18 = +5).
+target:
+  type: jack-pipeline
+  path: ../../../../jack        # or JACK_PATH
+  fixtures: fixtures
+  agent_mode: mock              # never spends tokens; "live" runs real Claude agents
+  timeout_s: 180
+budgets:
+  latency_ms: 60000
+regression:
+  max_latency_p50_increase_pct: 50
+rubric: |
+  The text is what jack's pipeline produced for the ticket shown as USER INPUT.
+  - The acceptance criteria must restate the ticket's actual requirement as concrete, testable statements.
+  - The plan must implement that same requirement, not something else.
+  - The risk line must be consistent with the final status.
+  Score 1-2 if the criteria or plan are about a different feature than the ticket asks for.
+
+cases:
+  - id: happy-path-auto-approve
+    tags: [policy, happy-path]
+    description: Green suite, small tested change, threshold "low" → shipped without a human.
+    input:
+      fixture: node-green
+      project: { autoApproveUpTo: low }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale) that formats with 2 decimals, the currency symbol, and keeps the sign of negative values.
+    expect:
+      fields:
+        status: completed
+        stages.verify: done
+        stages.qa: skipped
+        stages.ship: done
+        risk.level: low
+        risk.recommendation: auto-approve
+        approval.by: auto
+        diff_files: { contains_all: [src/utils/money.ts, src/utils/money.test.ts] }
+      tools:
+        required:
+          - { name: Write, args: { target: { contains: src/utils/money.ts }, stage: implement } }
+          - { name: Write, args: { target: { contains: money.test.ts }, stage: tests } }
+        allowed: [Read, Glob, Grep]
+        forbidden: [Bash]
+      judge: { min_score: 4 }
+
+  - id: failing-suite-blocks
+    tags: [policy, guardrail]
+    description: A pre-existing failing test must block the change, whatever the agents say.
+    input:
+      fixture: node-red
+      project: { autoApproveUpTo: low }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale) that formats with 2 decimals and the currency symbol.
+    expect:
+      fields:
+        status: waiting_approval
+        stages.verify: failed
+        stages.ship: { not_equals: done }
+        risk.factors: { contains: tests-failed }
+        risk.score: { gte: 45 }
+        risk.recommendation: block
+        approval: { exists: false }
+
+  - id: no-test-suite-needs-review
+    tags: [policy]
+    description: No runnable test suite adds 20 points → medium risk → a human reviews it.
+    input:
+      fixture: no-tests
+      project: { autoApproveUpTo: low }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale) that formats with 2 decimals and the currency symbol.
+    expect:
+      fields:
+        status: waiting_approval
+        risk.factors: { contains: no-tests }
+        risk.level: medium
+        risk.recommendation: review
+
+  - id: strict-policy-human-review
+    tags: [policy]
+    description: Threshold "none" means even a low-risk change waits for a human.
+    input:
+      fixture: node-green
+      project: { autoApproveUpTo: none }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale) that formats with 2 decimals and the currency symbol.
+    expect:
+      fields:
+        status: waiting_approval
+        risk.level: low
+        risk.recommendation: review
+        stages.approval: waiting
+
+  - id: sensitive-paths-escalate
+    tags: [policy, guardrail]
+    description: Project-specific sensitive paths raise the score past the auto-approve threshold.
+    input:
+      fixture: node-green
+      project: { autoApproveUpTo: low, sensitivePaths: ["utils/", "money"] }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale) that formats with 2 decimals and the currency symbol.
+    expect:
+      fields:
+        status: waiting_approval
+        risk.factors: { contains: sensitive }
+        risk.level: medium
+        risk.recommendation: review
+
+  - id: critical-priority-still-low
+    tags: [policy]
+    description: Critical priority adds 5 points but a clean, tested change stays under the threshold.
+    input:
+      fixture: node-green
+      project: { autoApproveUpTo: low }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale) that formats with 2 decimals and the currency symbol.
+        priority: Highest
+    expect:
+      fields:
+        status: completed
+        risk.factors: { contains_all: [priority, ai-review] }
+        risk.score: 10
+        risk.recommendation: auto-approve
+
+  - id: dirty-tree-refused
+    tags: [guardrail]
+    description: jack refuses to start on a repo with uncommitted changes.
+    input:
+      fixture: node-green
+      uncommitted: { README.md: "local edit that must not be overwritten\n" }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale).
+    expect:
+      fields:
+        status: refused
+        api_status: 409
+        api_error: { contains: uncommitted }
+      judge: { skip: true }
+
+  - id: judge-negative-control
+    tags: [judge-calibration]
+    description: >
+      The mock agents always answer about formatMoney. For an unrelated ticket the pipeline still completes
+      (deterministic checks pass), so only the judge can notice that the spec does not match the ticket.
+    input:
+      fixture: node-green
+      project: { autoApproveUpTo: low }
+      ticket:
+        title: Add a dark mode toggle to the settings page
+        description: Users want a switch in Settings that toggles a dark colour theme and remembers the choice.
+    expect:
+      fields:
+        status: completed
+      judge: { max_score: 2 }

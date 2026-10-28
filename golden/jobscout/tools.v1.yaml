@@ -1,0 +1,107 @@
+suite: jobscout-tools
+version: 1
+description: >
+  Contract tests for the jobscout MCP server's tools, called over stdio exactly like an MCP client would.
+  No LLM involved. HTTP traffic is replayed from a cassette with the clock frozen at recording time,
+  so this suite is deterministic and runs in CI.
+target:
+  type: jobscout-tools
+  path: ../../../jobscout-mcp      # or JOBSCOUT_PATH
+  cassette: ../../cassettes/jobscout-2026-10.json.gz
+  cassette_mode: replay            # AGENT_EVALS_CASSETTE_MODE=auto records missing requests
+budgets:
+  latency_ms: 15000
+regression:
+  max_latency_p50_increase_pct: 100
+
+cases:
+  - id: list-sources
+    tags: [discovery]
+    input: { calls: [{ tool: list_sources }] }
+    expect:
+      output:
+        - contains_all: ["remotive: Remotive", "hn:", "arbeitnow:"]
+        - regex: "adzuna: .*(ADZUNA|key)"
+      fields:
+        errors.0: false
+
+  - id: search-python-remote
+    tags: [search]
+    input: { calls: [{ tool: search_jobs, args: { query: python, remote_only: true, limit: 10 } }] }
+    expect:
+      output:
+        - regex: '\d+ postings match "python", remote only\. Showing the \d+ newest\.'
+        - contains: "By source:"
+        - regex: '\[[a-z]+:[^\]]+\]'
+      fields:
+        errors.0: false
+        first_id: { exists: true }
+
+  - id: search-then-get-job
+    tags: [search, details]
+    description: get_job must resolve an id returned by search_jobs in the same session.
+    input:
+      calls:
+        - { tool: search_jobs, args: { query: engineer, limit: 5 } }
+        - { tool: get_job, args: { id: "{{first_id}}" } }
+    expect:
+      output:
+        - contains_all: ["Apply: http", "Skills mentioned:"]
+      fields:
+        errors: [false, false]
+
+  - id: get-job-unknown-id
+    tags: [errors]
+    description: Unknown ids return a tool error that tells the model what to do next.
+    input: { calls: [{ tool: get_job, args: { id: "remotive:0" } }] }
+    expect:
+      output:
+        - contains: "Run search_jobs first"
+      fields:
+        errors.0: true
+
+  - id: invalid-arguments-rejected
+    tags: [errors]
+    description: Schema validation rejects an empty query instead of searching for everything.
+    input: { calls: [{ tool: search_jobs, args: { query: "" } }] }
+    expect:
+      fields:
+        errors.0: true
+
+  - id: market-snapshot-europe
+    tags: [analysis]
+    input: { calls: [{ tool: market_snapshot, args: { query: engineer, location: Europe } }] }
+    expect:
+      output:
+        - not_contains: "No postings matched"
+        - regex: "(?i)skills"
+        - regex: "(?i)remote"
+      fields:
+        errors.0: false
+
+  - id: rank-against-profile
+    tags: [analysis, ranking]
+    input:
+      calls:
+        - tool: rank_jobs_for_me
+          args: { query: engineer, skills: [Python, FastAPI, Docker, LLMs, TypeScript, React], limit: 5 }
+    expect:
+      output:
+        - regex: 'Ranked \d+ of \d+ postings for "engineer"'
+        - contains: "fit "
+        - contains_all: ["you have:", "missing:"]
+      fields:
+        errors.0: false
+
+  - id: rank-unknown-skill-reported
+    tags: [ranking, errors]
+    description: Skills outside the dictionary are reported, not silently dropped.
+    input:
+      calls:
+        - tool: rank_jobs_for_me
+          args: { query: engineer, skills: [Python, Klingon], limit: 3 }
+    expect:
+      output:
+        - contains: "Not recognised (ignored in scoring): Klingon"
+      fields:
+        errors.0: false

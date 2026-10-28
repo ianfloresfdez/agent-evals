@@ -1,0 +1,597 @@
+{
+ "run_id": "20261028T075008Z",
+ "suite": "jobscout-tools",
+ "suite_version": 1,
+ "suite_sha256": "aca69493902f",
+ "target": {
+  "type": "jobscout-tools",
+  "repo": "jobscout-mcp",
+  "repo_sha": "7255001",
+  "cassette": "jobscout-2026-10.json.gz",
+  "cassette_mode": "replay"
+ },
+ "judge": null,
+ "started_at": "2026-10-28T07:50:08+00:00",
+ "duration_s": 4.8,
+ "environment": {
+  "python": "3.12.16",
+  "platform": "Windows-11"
+ },
+ "summary": {
+  "cases": 8,
+  "passed": 8,
+  "pass_rate": 1.0,
+  "task_success_rate": 1.0,
+  "tool_recall_mean": null,
+  "tool_precision_mean": null,
+  "judge_mean": null,
+  "latency_p50_ms": 579.2,
+  "latency_p95_ms": 798.5,
+  "tokens_total": 0,
+  "tokens_mean": 0.0,
+  "cost_usd_total": 0.0,
+  "judge_tokens_total": 0,
+  "errors": 0
+ },
+ "cases": [
+  {
+   "id": "list-sources",
+   "tags": [
+    "discovery"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'contains_all': ['remotive: Remotive', 'hn:', 'arbeitnow:']}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "output {'regex': 'adzuna: .*(ADZUNA|key)'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "errors.0 False",
+     "passed": true,
+     "detail": "got False",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "230 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "remotive: Remotive (remote jobs). ready\narbeitnow: Arbeitnow (Europe). ready\nhn: Hacker News 'Who is hiring?'. ready\nadzuna: Adzuna (Spain and 15+ countries). needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com)\nhimalayas: Himalayas (remote jobs). ready\njobicy: Jobicy (remote, Spain/Europe). ready\nremoteok: Remote OK (remote jobs). ready\ncompanies: Company career pages (Greenhouse, Lever, Ashby). ready\nweworkremotely: We Work Remotely (remote jobs). ready\nworkingnomads: Working Nomads (remote jobs). ready",
+    "tool_calls": [
+     {
+      "name": "list_sources",
+      "args": {},
+      "ok": true,
+      "output_preview": "remotive: Remotive (remote jobs). ready\narbeitnow: Arbeitnow (Europe). ready\nhn: Hacker News 'Who is hiring?'. ready\nadzuna: Adzuna (Spain and 15+ countries). needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com)\nhimalayas: Himalayas (remote jobs). ready\njobicy: Jobicy (remote, Spain/Europe). ready\nremoteok: Remote OK (remote jobs). ready\ncompanies: Company career pages (Greenhouse, Lever, Ashby). ready\nweworkremotely: We Work Remotely (remote jobs). ready\nworkingnomads: Working Nomads (remote jobs). ready"
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 229.6,
+    "turns": 1,
+    "data": {
+     "outputs": [
+      "remotive: Remotive (remote jobs). ready\narbeitnow: Arbeitnow (Europe). ready\nhn: Hacker News 'Who is hiring?'. ready\nadzuna: Adzuna (Spain and 15+ countries). needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com)\nhimalayas: Himalayas (remote jobs). ready\njobicy: Jobicy (remote, Spain/Europe). ready\nremoteok: Remote OK (remote jobs). ready\ncompanies: Company career pages (Greenhouse, Lever, Ashby). ready\nweworkremotely: We Work Remotely (remote jobs). ready\nworkingnomads: Working Nomads (remote jobs). ready"
+     ],
+     "errors": [
+      false
+     ],
+     "first_id": null
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "search-python-remote",
+   "tags": [
+    "search"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'regex': '\\\\d+ postings match \"python\", remote only\\\\. Showing the \\…",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "output {'contains': 'By source:'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "output {'regex': '\\\\[[a-z]+:[^\\\\]]+\\\\]'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "errors.0 False",
+     "passed": true,
+     "detail": "got False",
+     "kind": "task"
+    },
+    {
+     "name": "first_id {'exists': True}",
+     "passed": true,
+     "detail": "got 'weworkremotely:carrot-sr-data-engineer'",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "568 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "211 postings match \"python\", remote only. Showing the 10 newest.\n\nBy source:\nRemotive (remote jobs): 3\nArbeitnow (Europe): 15\nHacker News 'Who is hiring?': 36\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 74\nRemote OK (remote jobs): 13\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 16\nWorking Nomads (remote jobs): 13\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Lead Data Scientist, Product  [weworkremotely:descript-lead-data-scientist-product]\n  Descript | Anywhere in the World | remote | today\n  skills: Python, SQL, OpenAI API, Spark\n  https://weworkremotely.com/remote-jobs/descript-lead-data-scientist-product\n- Business Intelligence Analyst (Contractor)  [weworkremotely:doximity-business-intelligence-analyst-contractor]\n  Doximity | Anywhere in the World | remote | today\n  skills: Python, SQL, Pandas\n  https://weworkremotely.com/remote-jobs/doximity-business-intelligence-analyst-contractor\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federal\n- Technical Account Manager- DACH  [arbeitnow:remote-technical-account-manager-dach-470630]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-dach-470630\n- Technical Account Manager- Nordics  [arbeitnow:remote-technical-account-manager-nordics-345486]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-nordics-345486\n- Service Desk/System Administrator  [jobicy:151895]\n  Playson | Ukraine | remote | today\n  skills: Python, AWS, GCP, Azure, Linux\n  https://jobicy.com/jobs/151895-service-desk-system-administrator\n- Python Developer (with Machine Learning knowledge)  [himalayas:companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575]\n  DevGrid | Worldwide | remote | today\n  skills: Python, SQL, Machine learning, Django, Flask, Redis, Pandas, AWS\n  https://himalayas.app/companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575?utm_source=api\n- Senior Site Reliability Engineer (SRE) m/f/x  [arbeitnow:remote-senior-site-reliability-engineer-sre-berlin-347745]\n  Makersite GmbH | Remote job | remote | today\n  skills: Python, AWS, Azure, Terraform\n  https://www.arbeitnow.com/jobs/companies/makersite-gmbh/remote-senior-site-reliability-engineer-sre-berlin-347745",
+    "tool_calls": [
+     {
+      "name": "search_jobs",
+      "args": {
+       "query": "python",
+       "remote_only": true,
+       "limit": 10
+      },
+      "ok": true,
+      "output_preview": "211 postings match \"python\", remote only. Showing the 10 newest.\n\nBy source:\nRemotive (remote jobs): 3\nArbeitnow (Europe): 15\nHacker News 'Who is hiring?': 36\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 74\nRemote OK (remote jobs): 13\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 16\nWorking Nomads (remote jobs): 13\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Lead Data Scientist, Product  [weworkremotely:descript-lead-data-scientist-product]\n  Descript | Anywhere in the World | remote | today\n  skills: Python, SQL, OpenAI API, Spark\n  https://weworkremotely.com/remote-jobs/descript-lead-data-scientist-product\n- Business Intelligence Analyst (Contractor)  [weworkremotely:doximity-business-intelligence-analyst-contractor]\n  Doximity | Anywhere in the World | remote | today\n  skills: Python, SQL, Pandas\n  https://weworkremotely.com/remote-jobs/doximity-business-intelligence-analyst-contractor\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federa"
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 567.7,
+    "turns": 1,
+    "data": {
+     "outputs": [
+      "211 postings match \"python\", remote only. Showing the 10 newest.\n\nBy source:\nRemotive (remote jobs): 3\nArbeitnow (Europe): 15\nHacker News 'Who is hiring?': 36\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 74\nRemote OK (remote jobs): 13\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 16\nWorking Nomads (remote jobs): 13\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Lead Data Scientist, Product  [weworkremotely:descript-lead-data-scientist-product]\n  Descript | Anywhere in the World | remote | today\n  skills: Python, SQL, OpenAI API, Spark\n  https://weworkremotely.com/remote-jobs/descript-lead-data-scientist-product\n- Business Intelligence Analyst (Contractor)  [weworkremotely:doximity-business-intelligence-analyst-contractor]\n  Doximity | Anywhere in the World | remote | today\n  skills: Python, SQL, Pandas\n  https://weworkremotely.com/remote-jobs/doximity-business-intelligence-analyst-contractor\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federal\n- Technical Account Manager- DACH  [arbeitnow:remote-technical-account-manager-dach-470630]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-dach-470630\n- Technical Account Manager- Nordics  [arbeitnow:remote-technical-account-manager-nordics-345486]\n  Camunda | Remote | remote | $150k/year | today\n  skills: Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n  https://www.arbeitnow.com/jobs/companies/camunda/remote-technical-account-manager-nordics-345486\n- Service Desk/System Administrator  [jobicy:151895]\n  Playson | Ukraine | remote | today\n  skills: Python, AWS, GCP, Azure, Linux\n  https://jobicy.com/jobs/151895-service-desk-system-administrator\n- Python Developer (with Machine Learning knowledge)  [himalayas:companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575]\n  DevGrid | Worldwide | remote | today\n  skills: Python, SQL, Machine learning, Django, Flask, Redis, Pandas, AWS\n  https://himalayas.app/companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575?utm_source=api\n- Senior Site Reliability Engineer (SRE) m/f/x  [arbeitnow:remote-senior-site-reliability-engineer-sre-berlin-347745]\n  Makersite GmbH | Remote job | remote | today\n  skills: Python, AWS, Azure, Terraform\n  https://www.arbeitnow.com/jobs/companies/makersite-gmbh/remote-senior-site-reliability-engineer-sre-berlin-347745"
+     ],
+     "errors": [
+      false
+     ],
+     "first_id": "weworkremotely:carrot-sr-data-engineer"
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "search-then-get-job",
+   "tags": [
+    "search",
+    "details"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'contains_all': ['Apply: http', 'Skills mentioned:']}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "errors [False, False]",
+     "passed": true,
+     "detail": "got [False, False]",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "591 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "614 postings match \"engineer\". Showing the 5 newest.\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federal\n- AI Edge Deployment Engineer  [arbeitnow:ai-edge-deployment-engineer-berlin-181670]\n  Almetra | Onsite Berlin | on-site | €45k-58k/year | today\n  skills: Python, Linux\n  https://www.arbeitnow.com/jobs/companies/almetra/ai-edge-deployment-engineer-berlin-181670\n- Mechanical Analyses Engineer  [arbeitnow:mechanical-analyses-engineer-munich-10409]\n  The Exploration Company | Munich, Germany | on-site | today\n  https://www.arbeitnow.com/jobs/companies/the-exploration-company/mechanical-analyses-engineer-munich-10409\n\nSr. Data Engineer\nCarrot | Anywhere in the World | remote\nSalary: not published\nPosted: 2026-10-28T07:31:13.000Z | Source: We Work Remotely (remote jobs)\nSkills mentioned: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\nTags: Full-Stack Programming, Full-Time\nApply: https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\nHeadquarters: Remote\n\nAbout Carrot:\n\nCarrot is the leading global fertility and family care platform, built on intelligent care orchestration: the right clinical guidance, at the right moment, in the context of each member’s life. More than a thousand multinational employers, health plans, and health systems trust Carrot to support millions of members across 195 countries – from pre-pregnancy through menopause and major life moments in between. Carrot's comprehensive clinical program delivers industry-leading cost savings for plan sponsors and award-winning experiences and improved outcomes for millions of people worldwide.\n\nCarrot is widely regarded as a defining force in healthcare innovation as a recipient of several top-tier awards, including Fast Company's 'Most Innovative Companies' and CNBC's '100 Barrier Breaking Startups'. The company is regularly cited by leading global outlets — including The Economist, Bloomberg, The Wall Street Journal, NPR, ABC News, and Harvard Business Review — as a leading voice on digital health, the future of work, and family health. Learn more at get-carrot.com.\n\nThe Opportunity\n\nCarrot is seeking a Sr. Data Engineer to lead the evolution, reliability, and scalability of our modern data infrastructure across analytics, reporting, and business intelligence. In this role, you will architect, build, and maintain robust, automated data pipelines, orchestrate workflows, integrate diverse data sources, and partner with stakeholders across the business to deliver secure, compliant, high-quality data solutions.\n\nYour work will span the full data lifecycle, from architecting resilient ETL/ELT pipelines and developing real-time and batch data integrations to automating reporting, reducing technical debt, and enabling advanced analytics. Sr. Data Engineers at Carrot are operational stewards and technical mentors, driving improvements in system maturity, cost efficiency, automation, and collaborative practices.\n\nYou will join our Data Engineering team, which develops and optimizes scalable data pipelines and cloud infrastructure to enable secure, automated reporting and analytics across Carrot. The team collaborates closely with Business Intelligence, Product, Finance, Legal, and Commercial partners to deliver reliable integrations and self-serve solutions that drive business insights and operational efficiency.\n\nWhat You’ll Own\n\nIn this role, you will:\n\n- Architect, build, test, deploy, and maintain scalable, automated ETL/ELT pipelines using Python, dbt, and orchestration tools such as Prefect and Airflow\n\n- Administer and optimize cloud-based data warehouse and lake platforms, including Snowflake, AWS (S3, Redshift), and Google Cloud, integrating new sources and tuning for performance and cost\n\n- Orchestrate data workflows with custom scheduling, alerting, dependency management, monitoring, and error resolution\n\n- Design and maintain secure external data flows through SFTP, Files.com, and APIs, with a focus on reliability and compliance\n\n- Automate manual reporting and operational tasks, building robust, reusable pipeline components that reduce operational overhead\n\n- Partner with backend product engineers to optimize production database schemas with analytics use cases in mind\n\n- Strengthen data quality, lineage, governance, and documentation practices across key data domains\n\n- Mentor teammates and reinforce best practices in version control, code review, and structured workflow management\n\nWhat Success Looks Like\n\nIn your first 12–18 months, you will have:\n\n- Taken end-to-end ownership of core pipelines and integrations, with measurable improvements in reliability, data recency, and cost efficiency\n\n- Automated high-effort manual workflows, reducing operational risk and freeing capacity for higher-value engineering work\n\n- Delivered secure, compliant data integrations that stakeholders across the business trust for decision-making\n\n- Strengthened observability across the platform, including monitoring, alerting, and incident response for critical data workflows\n\n- Established yourself as a technical mentor and a go-to partner for Business Intelligence, Product, and cross-functional teams\n\nAbout You\n\nYou likely have:\n\n- Expert-level proficiency in Snowflake, dbt, and Python for data modeling, transformation, pipeline development, and advanced analytics\n\n- Advanced SQL skills for complex querying, large-scale data model design, and database optimization\n\n- Proven experience architecting, building, testing, deploying, and maintaining scalable, automated ETL/ELT pipelines using modern orchestration tools such as Prefect and Airflow\n\n- Hands-on administration of cloud-based data warehouse and lake platforms, including Snowflake, AWS (S3, Redshift), and Google Cloud\n\n- A strong understanding of secure external data flows through SFTP, Files.com, and APIs, with a focus on reliability and compliance\n\n- Mastery of version control (Git, GitHub) and structured workflow management (Jira) for code review, audit trails, and operational transparency\n\n- A demonstrated ability to automate and simplify complex manual tasks, building robust, reusable pipeline components\n\n- Dependability, adaptability, and a collaborative approach to engineering, thriving in dynamic and ambiguous environments\n\nNice to Have ⭐\n\nWhile not required, we would be especially excited if you bring:\n\n- Hands-on experience in startup or rapid-growth environments, delivering technical solutions under shifting priorities\n\n- A background supporting business intelligence, analytics, and data science teams through large-scale integrations and multi-tenant reporting\n\n- Familiarity with both batch and event-driven ingestion paradigms, including near-real-time pipelines built on Snowflake, dbt, and Python\n\n- Experience automating operational, financial, or compliance-driven workflows within cloud data environments\n\n- Exposure to audit, privacy, and compliance frameworks such as SOC 2, HIPAA, GDPR, ISO, and SOX, particularly in data governance and secure access controls\n\n- Experience in regulated industries such as healthcare, healthtech, or SaaS\n\nWhy This Role Matters\n\nReliable data is the foundation of how Carrot operates, from the analytics that guide business decisions to the reporting our customers and partners depend on. The systems this role owns determine the accuracy, recency, and security of data used across the entire company.\n\nAs Carrot scales globally, the Sr. Data Engineer will make our data platform more automated, resilient, and cost-efficient, enabling teams across the business to move faster with data they trust. This work directly supports Carrot's mission of expanding access to fertility and family-building care worldwide.\n\nInterview Process\n\nWe believe in a thoughtful and transparent interview process designed to create alignment for both candidates and our team.\n\nFor this role, candidates can expect:\n\n- Recruiter Screen — 30 minutes\n\n- Hiring Manager Interview — 30–45 minutes\n\n- Cross-Functional Panel Interviews — 45 minutes\n\n- Executive Leadership Conversation — 30 minutes\n\n- Hiring Manager Wrap-Up — 15 minutes\n\nThroughout the process, we will share additional context about the team, business priorities, customer landscape, and what success looks like in this role.\n\nWhy Candidates Join Carrot\n\nCarrot offers the opportunity to do meaningful work in service of a deeply human mission.\n\nHighlights include:\n\n- A mission-driven company focused on expanding access to fertility and family-forming care globally.\n\n- A high-growth environment where leaders are empowered to shape strategy and drive impact.\n\n- Competitive compensation, equity, and comprehensive benefits.\n\n- Flexible Time Off and a culture that actively encourages employees to recharge.\n\n- Comprehensive parental leave and family-forming benefits.\n\n- A collaborative, inclusive, and values-driven culture.\n\n- The opportunity to work alongside passionate, thoughtful teammates committed to improving he…",
+    "tool_calls": [
+     {
+      "name": "search_jobs",
+      "args": {
+       "query": "engineer",
+       "limit": 5
+      },
+      "ok": true,
+      "output_preview": "614 postings match \"engineer\". Showing the 5 newest.\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federal\n- AI Edge Deployment Engineer  [arbeitnow:ai-edge-deployment-engineer-berlin-181670]\n  Almetra | Onsite Berlin | on-site | €45k-58k/year | today\n  skills: Python, Linux\n  https://www.arbeitnow.com/jobs/companies/almetra/ai-edge-deployment-engineer-berlin-181670\n- Mechanical Analyses Engineer  [arbeitnow:mechanical-analyses-engineer-munich-10409]\n  The Exploration Company | Munich, Germany | on-site | today\n  https://www.arbeitnow.com/jobs/companies/the-exploration-company/mechanical-analyses-engineer-munich-10409"
+     },
+     {
+      "name": "get_job",
+      "args": {
+       "id": "weworkremotely:carrot-sr-data-engineer"
+      },
+      "ok": true,
+      "output_preview": "Sr. Data Engineer\nCarrot | Anywhere in the World | remote\nSalary: not published\nPosted: 2026-10-28T07:31:13.000Z | Source: We Work Remotely (remote jobs)\nSkills mentioned: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\nTags: Full-Stack Programming, Full-Time\nApply: https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\nHeadquarters: Remote\n\nAbout Carrot:\n\nCarrot is the leading global fertility and family care platform, built on intelligent care orchestration: the right clinical guidance, at the right moment, in the context of each member’s life. More than a thousand multinational employers, health plans, and health systems trust Carrot to support millions of members across 195 countries – from pre-pregnancy through menopause and major life moments in between. Carrot's comprehensive clinical program delivers industry-leading cost savings for plan sponsors and award-winning experiences and improved outcomes for millions of people worldwide.\n\nCarrot is widely regarded as a defining force in healthcare innovation as a recipient of several top-tier awards, including Fast Company's 'Most Innovative Companies' and CNBC's '100 Barrier Breaking Startups'. The company is regularly cited by leading global outlets — including The Economist, Bloomberg, The Wall Street Journal, NPR, ABC News, and Harvard Business Review — as a leading voice on digital health, the future of work, and family health. Learn more at get-carrot.com.\n\nThe Opportunity\n\nCarrot is seeking a Sr. Data Engineer to lead the evolution, reliability, and scalability of our modern data infrastructure across analytics, reporting, and business intelligence. In this role, you will architect, build, and maintain robust, automated data pipelines, orchestrate workflows, integrate diverse data sources, and partner with stakeholders across the business to deliver secure, compliant, high-quality data solutions.\n\nYour work will span the full data lifecycle, from architecting resilient ETL/ELT pipeline"
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 590.7,
+    "turns": 2,
+    "data": {
+     "outputs": [
+      "614 postings match \"engineer\". Showing the 5 newest.\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12\n\n- Sr. Data Engineer  [weworkremotely:carrot-sr-data-engineer]\n  Carrot | Anywhere in the World | remote | today\n  skills: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n  https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\n- Senior Database Reliability Engineer I - Germany/Austria/UK  [weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n  Storyblok | Anywhere in the World | remote | today\n  skills: Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n  https://weworkremotely.com/remote-jobs/storyblok-senior-database-reliability-engineer-i-germany-austria-uk\n- Manager, Professional Services Federal  [weworkremotely:collibra-manager-professional-services-federal]\n  Collibra | United States of America | remote | $128k-160k/year | today\n  skills: Python, TypeScript, Java, AWS, Azure, Kubernetes, Linux\n  https://weworkremotely.com/remote-jobs/collibra-manager-professional-services-federal\n- AI Edge Deployment Engineer  [arbeitnow:ai-edge-deployment-engineer-berlin-181670]\n  Almetra | Onsite Berlin | on-site | €45k-58k/year | today\n  skills: Python, Linux\n  https://www.arbeitnow.com/jobs/companies/almetra/ai-edge-deployment-engineer-berlin-181670\n- Mechanical Analyses Engineer  [arbeitnow:mechanical-analyses-engineer-munich-10409]\n  The Exploration Company | Munich, Germany | on-site | today\n  https://www.arbeitnow.com/jobs/companies/the-exploration-company/mechanical-analyses-engineer-munich-10409",
+      "Sr. Data Engineer\nCarrot | Anywhere in the World | remote\nSalary: not published\nPosted: 2026-10-28T07:31:13.000Z | Source: We Work Remotely (remote jobs)\nSkills mentioned: Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\nTags: Full-Stack Programming, Full-Time\nApply: https://weworkremotely.com/remote-jobs/carrot-sr-data-engineer\nHeadquarters: Remote\n\nAbout Carrot:\n\nCarrot is the leading global fertility and family care platform, built on intelligent care orchestration: the right clinical guidance, at the right moment, in the context of each member’s life. More than a thousand multinational employers, health plans, and health systems trust Carrot to support millions of members across 195 countries – from pre-pregnancy through menopause and major life moments in between. Carrot's comprehensive clinical program delivers industry-leading cost savings for plan sponsors and award-winning experiences and improved outcomes for millions of people worldwide.\n\nCarrot is widely regarded as a defining force in healthcare innovation as a recipient of several top-tier awards, including Fast Company's 'Most Innovative Companies' and CNBC's '100 Barrier Breaking Startups'. The company is regularly cited by leading global outlets — including The Economist, Bloomberg, The Wall Street Journal, NPR, ABC News, and Harvard Business Review — as a leading voice on digital health, the future of work, and family health. Learn more at get-carrot.com.\n\nThe Opportunity\n\nCarrot is seeking a Sr. Data Engineer to lead the evolution, reliability, and scalability of our modern data infrastructure across analytics, reporting, and business intelligence. In this role, you will architect, build, and maintain robust, automated data pipelines, orchestrate workflows, integrate diverse data sources, and partner with stakeholders across the business to deliver secure, compliant, high-quality data solutions.\n\nYour work will span the full data lifecycle, from architecting resilient ETL/ELT pipelines and developing real-time and batch data integrations to automating reporting, reducing technical debt, and enabling advanced analytics. Sr. Data Engineers at Carrot are operational stewards and technical mentors, driving improvements in system maturity, cost efficiency, automation, and collaborative practices.\n\nYou will join our Data Engineering team, which develops and optimizes scalable data pipelines and cloud infrastructure to enable secure, automated reporting and analytics across Carrot. The team collaborates closely with Business Intelligence, Product, Finance, Legal, and Commercial partners to deliver reliable integrations and self-serve solutions that drive business insights and operational efficiency.\n\nWhat You’ll Own\n\nIn this role, you will:\n\n- Architect, build, test, deploy, and maintain scalable, automated ETL/ELT pipelines using Python, dbt, and orchestration tools such as Prefect and Airflow\n\n- Administer and optimize cloud-based data warehouse and lake platforms, including Snowflake, AWS (S3, Redshift), and Google Cloud, integrating new sources and tuning for performance and cost\n\n- Orchestrate data workflows with custom scheduling, alerting, dependency management, monitoring, and error resolution\n\n- Design and maintain secure external data flows through SFTP, Files.com, and APIs, with a focus on reliability and compliance\n\n- Automate manual reporting and operational tasks, building robust, reusable pipeline components that reduce operational overhead\n\n- Partner with backend product engineers to optimize production database schemas with analytics use cases in mind\n\n- Strengthen data quality, lineage, governance, and documentation practices across key data domains\n\n- Mentor teammates and reinforce best practices in version control, code review, and structured workflow management\n\nWhat Success Looks Like\n\nIn your first 12–18 months, you will have:\n\n- Taken end-to-end ownership of core pipelines and integrations, with measurable improvements in reliability, data recency, and cost efficiency\n\n- Automated high-effort manual workflows, reducing operational risk and freeing capacity for higher-value engineering work\n\n- Delivered secure, compliant data integrations that stakeholders across the business trust for decision-making\n\n- Strengthened observability across the platform, including monitoring, alerting, and incident response for critical data workflows\n\n- Established yourself as a technical mentor and a go-to partner for Business Intelligence, Product, and cross-functional teams\n\nAbout You\n\nYou likely have:\n\n- Expert-level proficiency in Snowflake, dbt, and Python for data modeling, transformation, pipeline development, and advanced analytics\n\n- Advanced SQL skills for complex querying, large-scale data model design, and database optimization\n\n- Proven experience architecting, building, testing, deploying, and maintaining scalable, automated ETL/ELT pipelines using modern orchestration tools such as Prefect and Airflow\n\n- Hands-on administration of cloud-based data warehouse and lake platforms, including Snowflake, AWS (S3, Redshift), and Google Cloud\n\n- A strong understanding of secure external data flows through SFTP, Files.com, and APIs, with a focus on reliability and compliance\n\n- Mastery of version control (Git, GitHub) and structured workflow management (Jira) for code review, audit trails, and operational transparency\n\n- A demonstrated ability to automate and simplify complex manual tasks, building robust, reusable pipeline components\n\n- Dependability, adaptability, and a collaborative approach to engineering, thriving in dynamic and ambiguous environments\n\nNice to Have ⭐\n\nWhile not required, we would be especially excited if you bring:\n\n- Hands-on experience in startup or rapid-growth environments, delivering technical solutions under shifting priorities\n\n- A background supporting business intelligence, analytics, and data science teams through large-scale integrations and multi-tenant reporting\n\n- Familiarity with both batch and event-driven ingestion paradigms, including near-real-time pipelines built on Snowflake, dbt, and Python\n\n- Experience automating operational, financial, or compliance-driven workflows within cloud data environments\n\n- Exposure to audit, privacy, and compliance frameworks such as SOC 2, HIPAA, GDPR, ISO, and SOX, particularly in data governance and secure access controls\n\n- Experience in regulated industries such as healthcare, healthtech, or SaaS\n\nWhy This Role Matters\n\nReliable data is the foundation of how Carrot operates, from the analytics that guide business decisions to the reporting our customers and partners depend on. The systems this role owns determine the accuracy, recency, and security of data used across the entire company.\n\nAs Carrot scales globally, the Sr. Data Engineer will make our data platform more automated, resilient, and cost-efficient, enabling teams across the business to move faster with data they trust. This work directly supports Carrot's mission of expanding access to fertility and family-building care worldwide.\n\nInterview Process\n\nWe believe in a thoughtful and transparent interview process designed to create alignment for both candidates and our team.\n\nFor this role, candidates can expect:\n\n- Recruiter Screen — 30 minutes\n\n- Hiring Manager Interview — 30–45 minutes\n\n- Cross-Functional Panel Interviews — 45 minutes\n\n- Executive Leadership Conversation — 30 minutes\n\n- Hiring Manager Wrap-Up — 15 minutes\n\nThroughout the process, we will share additional context about the team, business priorities, customer landscape, and what success looks like in this role.\n\nWhy Candidates Join Carrot\n\nCarrot offers the opportunity to do meaningful work in service of a deeply human mission.\n\nHighlights include:\n\n- A mission-driven company focused on expanding access to fertility and family-forming care globally.\n\n- A high-growth environment where leaders are empowered to shape strategy and drive impact.\n\n- Competitive compensation, equity, and comprehensive benefits.\n\n- Flexible Time Off and a culture that actively encourages employees to recharge.\n\n- Comprehensive parental leave and family-forming benefits.\n\n- A collaborative, inclusive, and values-driven culture.\n\n- The opportunity to work alongside passionate, thoughtful teammates committed to improving he…"
+     ],
+     "errors": [
+      false,
+      false
+     ],
+     "first_id": "weworkremotely:carrot-sr-data-engineer"
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "get-job-unknown-id",
+   "tags": [
+    "errors"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'contains': 'Run search_jobs first'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "errors.0 True",
+     "passed": true,
+     "detail": "got True",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "195 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "No posting with id \"remotive:0\" in this session. Run search_jobs first, then use an id from its results.",
+    "tool_calls": [
+     {
+      "name": "get_job",
+      "args": {
+       "id": "remotive:0"
+      },
+      "ok": false,
+      "output_preview": "No posting with id \"remotive:0\" in this session. Run search_jobs first, then use an id from its results."
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 195.4,
+    "turns": 1,
+    "data": {
+     "outputs": [
+      "No posting with id \"remotive:0\" in this session. Run search_jobs first, then use an id from its results."
+     ],
+     "errors": [
+      true
+     ],
+     "first_id": null
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "invalid-arguments-rejected",
+   "tags": [
+    "errors"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "errors.0 True",
+     "passed": true,
+     "detail": "got True",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "196 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "Tool error: MCP error -32602: Invalid arguments for tool search_jobs: [\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at least 1 character(s)\",\n    \"path\": [\n      \"query\"\n    ]\n  }\n]",
+    "tool_calls": [
+     {
+      "name": "search_jobs",
+      "args": {
+       "query": ""
+      },
+      "ok": false,
+      "output_preview": "Tool error: MCP error -32602: Invalid arguments for tool search_jobs: [\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at least 1 character(s)\",\n    \"path\": [\n      \"query\"\n    ]\n  }\n]"
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 195.7,
+    "turns": 1,
+    "data": {
+     "outputs": [
+      "Tool error: MCP error -32602: Invalid arguments for tool search_jobs: [\n  {\n    \"code\": \"too_small\",\n    \"minimum\": 1,\n    \"type\": \"string\",\n    \"inclusive\": true,\n    \"exact\": false,\n    \"message\": \"String must contain at least 1 character(s)\",\n    \"path\": [\n      \"query\"\n    ]\n  }\n]"
+     ],
+     "errors": [
+      true
+     ],
+     "first_id": null
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "market-snapshot-europe",
+   "tags": [
+    "analysis"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'not_contains': 'No postings matched'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "output {'regex': '(?i)skills'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "output {'regex': '(?i)remote'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "errors.0 False",
+     "passed": true,
+     "detail": "got False",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "635 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "Market snapshot for \"engineer\" in Europe: 131 postings.\n\nRemote: 99% of postings that say (129 remote, 1 on-site), 1 don't say.\n\nMost requested skills (share of postings):\n- Python: 40% (53)  [language]\n- AWS: 30% (39)  [infra]\n- TypeScript: 28% (37)  [language]\n- System design: 27% (36)  [practice]\n- React: 25% (33)  [frontend]\n- AI agents: 24% (32)  [ai]\n- LLMs: 23% (30)  [ai]\n- PostgreSQL: 22% (29)  [data]\n- Kubernetes: 21% (28)  [infra]\n- Node.js: 21% (27)  [backend]\n- Machine learning: 21% (27)  [ai]\n- SQL: 20% (26)  [language]\n- CI/CD: 18% (24)  [infra]\n- Go: 18% (24)  [language]\n- GCP: 17% (22)  [infra]\n- JavaScript: 17% (22)  [language]\n- Rust: 15% (20)  [language]\n- Terraform: 15% (20)  [infra]\n- Docker: 15% (19)  [infra]\n- Linux: 14% (18)  [infra]\n\nSalaries, annualised range midpoints (30% of postings publish one):\n- USD: median $205k, middle half $145k to $230k (n=23)\n- EUR: median €132k, middle half €93k to €142k (n=13)\n- PLN: median 290k PLN, middle half 278k PLN to 290k PLN (n=3)\n\nCompanies with several open postings:\n- Lemon.io: 9\n- RevenueCat: 5\n- Supabase: 5\n- Ashby: 4\n- Canonical: 3\n- Nebius: 3\n- Phantom: 3\n- WP Engine: 3\n\nBy source:\nRemotive (remote jobs): 4\nArbeitnow (Europe): 19\nHacker News 'Who is hiring?': 35\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 5\nJobicy (remote, Spain/Europe): 38\nRemote OK (remote jobs): 2\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 21\nWorking Nomads (remote jobs): 7",
+    "tool_calls": [
+     {
+      "name": "market_snapshot",
+      "args": {
+       "query": "engineer",
+       "location": "Europe"
+      },
+      "ok": true,
+      "output_preview": "Market snapshot for \"engineer\" in Europe: 131 postings.\n\nRemote: 99% of postings that say (129 remote, 1 on-site), 1 don't say.\n\nMost requested skills (share of postings):\n- Python: 40% (53)  [language]\n- AWS: 30% (39)  [infra]\n- TypeScript: 28% (37)  [language]\n- System design: 27% (36)  [practice]\n- React: 25% (33)  [frontend]\n- AI agents: 24% (32)  [ai]\n- LLMs: 23% (30)  [ai]\n- PostgreSQL: 22% (29)  [data]\n- Kubernetes: 21% (28)  [infra]\n- Node.js: 21% (27)  [backend]\n- Machine learning: 21% (27)  [ai]\n- SQL: 20% (26)  [language]\n- CI/CD: 18% (24)  [infra]\n- Go: 18% (24)  [language]\n- GCP: 17% (22)  [infra]\n- JavaScript: 17% (22)  [language]\n- Rust: 15% (20)  [language]\n- Terraform: 15% (20)  [infra]\n- Docker: 15% (19)  [infra]\n- Linux: 14% (18)  [infra]\n\nSalaries, annualised range midpoints (30% of postings publish one):\n- USD: median $205k, middle half $145k to $230k (n=23)\n- EUR: median €132k, middle half €93k to €142k (n=13)\n- PLN: median 290k PLN, middle half 278k PLN to 290k PLN (n=3)\n\nCompanies with several open postings:\n- Lemon.io: 9\n- RevenueCat: 5\n- Supabase: 5\n- Ashby: 4\n- Canonical: 3\n- Nebius: 3\n- Phantom: 3\n- WP Engine: 3\n\nBy source:\nRemotive (remote jobs): 4\nArbeitnow (Europe): 19\nHacker News 'Who is hiring?': 35\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 5\nJobicy (remote, Spain/Europe): 38\nRemote OK (remote jobs): 2\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 21\nWorking Nomads (remote jobs): 7"
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 635.2,
+    "turns": 1,
+    "data": {
+     "outputs": [
+      "Market snapshot for \"engineer\" in Europe: 131 postings.\n\nRemote: 99% of postings that say (129 remote, 1 on-site), 1 don't say.\n\nMost requested skills (share of postings):\n- Python: 40% (53)  [language]\n- AWS: 30% (39)  [infra]\n- TypeScript: 28% (37)  [language]\n- System design: 27% (36)  [practice]\n- React: 25% (33)  [frontend]\n- AI agents: 24% (32)  [ai]\n- LLMs: 23% (30)  [ai]\n- PostgreSQL: 22% (29)  [data]\n- Kubernetes: 21% (28)  [infra]\n- Node.js: 21% (27)  [backend]\n- Machine learning: 21% (27)  [ai]\n- SQL: 20% (26)  [language]\n- CI/CD: 18% (24)  [infra]\n- Go: 18% (24)  [language]\n- GCP: 17% (22)  [infra]\n- JavaScript: 17% (22)  [language]\n- Rust: 15% (20)  [language]\n- Terraform: 15% (20)  [infra]\n- Docker: 15% (19)  [infra]\n- Linux: 14% (18)  [infra]\n\nSalaries, annualised range midpoints (30% of postings publish one):\n- USD: median $205k, middle half $145k to $230k (n=23)\n- EUR: median €132k, middle half €93k to €142k (n=13)\n- PLN: median 290k PLN, middle half 278k PLN to 290k PLN (n=3)\n\nCompanies with several open postings:\n- Lemon.io: 9\n- RevenueCat: 5\n- Supabase: 5\n- Ashby: 4\n- Canonical: 3\n- Nebius: 3\n- Phantom: 3\n- WP Engine: 3\n\nBy source:\nRemotive (remote jobs): 4\nArbeitnow (Europe): 19\nHacker News 'Who is hiring?': 35\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 5\nJobicy (remote, Spain/Europe): 38\nRemote OK (remote jobs): 2\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 21\nWorking Nomads (remote jobs): 7"
+     ],
+     "errors": [
+      false
+     ],
+     "first_id": null
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "rank-against-profile",
+   "tags": [
+    "analysis",
+    "ranking"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'regex': 'Ranked \\\\d+ of \\\\d+ postings for \"engineer\"'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "output {'contains': 'fit '}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "output {'contains_all': ['you have:', 'missing:']}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "errors.0 False",
+     "passed": true,
+     "detail": "got False",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "800 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "Ranked 404 of 614 postings for \"engineer\" against: Python, FastAPI, Docker, LLMs, TypeScript, React.\nMissing most often in the best matches: C++ (6), PostgreSQL (6), System design (5), AI agents (4), Linux (4), JavaScript (3), Machine learning (3), GCP (3).\n\n- Product Engineer  [arbeitnow:product-engineer-berlin-347131]\n  Bsteuern | Berlin | on-site | today\n  skills: Python, TypeScript, React\n  fit 100/100 | you have: Python, TypeScript, React\n  https://www.arbeitnow.com/jobs/companies/bsteuern/product-engineer-berlin-347131\n- Front-end Engineer  [arbeitnow:front-end-engineer-london-382196]\n  Comand Ai | London | on-site | today\n  skills: TypeScript, OpenAI API, React\n  fit 67/100 | you have: TypeScript, React | missing: OpenAI API\n  https://www.arbeitnow.co.uk/jobs/companies/comand-ai/front-end-engineer-london-382196\n- Senior Software Engineer  [hn:49979600]\n  Quantum Minds | REMOTE (US) | remote | 21 days ago\n  skills: Python, C++, LLMs\n  fit 67/100 | you have: Python, LLMs | missing: C++\n  https://news.ycombinator.com/item?id=49979600\n- Founding Engineer, Forward Deployed (full-stack)  [hn:49961408]\n  Opaxa | San Francisco Bay Area preferred, REMOTE (US) considered | remote | $175k-225k/year | 23 days ago\n  skills: Python, TypeScript, React, PostgreSQL, AWS\n  fit 60/100 | you have: Python, TypeScript, React | missing: PostgreSQL, AWS\n  https://news.ycombinator.com/item?id=49961408\n- Senior Front-End Engineer (React) - Personalization  [arbeitnow:senior-front-end-engineer-react-personalization-amsterdam-492396]\n  Teampicnic | Amsterdam | on-site | 57-86k/year | today\n  skills: TypeScript, React, React Native, Testing\n  fit 60/100 | you have: TypeScript, React | missing: React Native, Testing\n  https://www.arbeitnow.nl/jobs/companies/teampicnic/senior-front-end-engineer-react-personalization-amsterdam-492396\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12",
+    "tool_calls": [
+     {
+      "name": "rank_jobs_for_me",
+      "args": {
+       "query": "engineer",
+       "skills": [
+        "Python",
+        "FastAPI",
+        "Docker",
+        "LLMs",
+        "TypeScript",
+        "React"
+       ],
+       "limit": 5
+      },
+      "ok": true,
+      "output_preview": "Ranked 404 of 614 postings for \"engineer\" against: Python, FastAPI, Docker, LLMs, TypeScript, React.\nMissing most often in the best matches: C++ (6), PostgreSQL (6), System design (5), AI agents (4), Linux (4), JavaScript (3), Machine learning (3), GCP (3).\n\n- Product Engineer  [arbeitnow:product-engineer-berlin-347131]\n  Bsteuern | Berlin | on-site | today\n  skills: Python, TypeScript, React\n  fit 100/100 | you have: Python, TypeScript, React\n  https://www.arbeitnow.com/jobs/companies/bsteuern/product-engineer-berlin-347131\n- Front-end Engineer  [arbeitnow:front-end-engineer-london-382196]\n  Comand Ai | London | on-site | today\n  skills: TypeScript, OpenAI API, React\n  fit 67/100 | you have: TypeScript, React | missing: OpenAI API\n  https://www.arbeitnow.co.uk/jobs/companies/comand-ai/front-end-engineer-london-382196\n- Senior Software Engineer  [hn:49979600]\n  Quantum Minds | REMOTE (US) | remote | 21 days ago\n  skills: Python, C++, LLMs\n  fit 67/100 | you have: Python, LLMs | missing: C++\n  https://news.ycombinator.com/item?id=49979600\n- Founding Engineer, Forward Deployed (full-stack)  [hn:49961408]\n  Opaxa | San Francisco Bay Area preferred, REMOTE (US) considered | remote | $175k-225k/year | 23 days ago\n  skills: Python, TypeScript, React, PostgreSQL, AWS\n  fit 60/100 | you have: Python, TypeScript, React | missing: PostgreSQL, AWS\n  https://news.ycombinator.com/item?id=49961408\n- Senior Front-End Engineer (React) - Personalization  [arbeitnow:senior-front-end-engineer-react-personalization-amsterdam-492396]\n  Teampicnic | Amsterdam | on-site | 57-86k/year | today\n  skills: TypeScript, React, React Native, Testing\n  fit 60/100 | you have: TypeScript, React | missing: React Native, Testing\n  https://www.arbeitnow.nl/jobs/companies/teampicnic/senior-front-end-engineer-react-personalization-amsterdam-492396\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID "
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 800.0,
+    "turns": 1,
+    "data": {
+     "outputs": [
+      "Ranked 404 of 614 postings for \"engineer\" against: Python, FastAPI, Docker, LLMs, TypeScript, React.\nMissing most often in the best matches: C++ (6), PostgreSQL (6), System design (5), AI agents (4), Linux (4), JavaScript (3), Machine learning (3), GCP (3).\n\n- Product Engineer  [arbeitnow:product-engineer-berlin-347131]\n  Bsteuern | Berlin | on-site | today\n  skills: Python, TypeScript, React\n  fit 100/100 | you have: Python, TypeScript, React\n  https://www.arbeitnow.com/jobs/companies/bsteuern/product-engineer-berlin-347131\n- Front-end Engineer  [arbeitnow:front-end-engineer-london-382196]\n  Comand Ai | London | on-site | today\n  skills: TypeScript, OpenAI API, React\n  fit 67/100 | you have: TypeScript, React | missing: OpenAI API\n  https://www.arbeitnow.co.uk/jobs/companies/comand-ai/front-end-engineer-london-382196\n- Senior Software Engineer  [hn:49979600]\n  Quantum Minds | REMOTE (US) | remote | 21 days ago\n  skills: Python, C++, LLMs\n  fit 67/100 | you have: Python, LLMs | missing: C++\n  https://news.ycombinator.com/item?id=49979600\n- Founding Engineer, Forward Deployed (full-stack)  [hn:49961408]\n  Opaxa | San Francisco Bay Area preferred, REMOTE (US) considered | remote | $175k-225k/year | 23 days ago\n  skills: Python, TypeScript, React, PostgreSQL, AWS\n  fit 60/100 | you have: Python, TypeScript, React | missing: PostgreSQL, AWS\n  https://news.ycombinator.com/item?id=49961408\n- Senior Front-End Engineer (React) - Personalization  [arbeitnow:senior-front-end-engineer-react-personalization-amsterdam-492396]\n  Teampicnic | Amsterdam | on-site | 57-86k/year | today\n  skills: TypeScript, React, React Native, Testing\n  fit 60/100 | you have: TypeScript, React | missing: React Native, Testing\n  https://www.arbeitnow.nl/jobs/companies/teampicnic/senior-front-end-engineer-react-personalization-amsterdam-492396\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12"
+     ],
+     "errors": [
+      false
+     ],
+     "first_id": "arbeitnow:product-engineer-berlin-347131"
+    },
+    "error": null
+   }
+  },
+  {
+   "id": "rank-unknown-skill-reported",
+   "tags": [
+    "ranking",
+    "errors"
+   ],
+   "passed": true,
+   "task_success": true,
+   "checks": [
+    {
+     "name": "output {'contains': 'Not recognised (ignored in scoring): Klingon'}",
+     "passed": true,
+     "detail": "",
+     "kind": "task"
+    },
+    {
+     "name": "errors.0 False",
+     "passed": true,
+     "detail": "got False",
+     "kind": "task"
+    },
+    {
+     "name": "latency ≤ 15000 ms",
+     "passed": true,
+     "detail": "796 ms",
+     "kind": "budget"
+    }
+   ],
+   "tool_recall": null,
+   "tool_precision": null,
+   "judge": null,
+   "trace": {
+    "output": "Ranked 404 of 614 postings for \"engineer\" against: Python.\nNot recognised (ignored in scoring): Klingon.\nMissing most often in the best matches: C++ (11), Linux (6), Testing (4), Rust (4), SQL (3), System design (3), Machine learning (2), Kubernetes (2).\n\n- AI Edge Deployment Engineer  [arbeitnow:ai-edge-deployment-engineer-berlin-181670]\n  Almetra | Onsite Berlin | on-site | €45k-58k/year | today\n  skills: Python, Linux\n  fit 50/100 | you have: Python | missing: Linux\n  https://www.arbeitnow.com/jobs/companies/almetra/ai-edge-deployment-engineer-berlin-181670\n- Principal Thermal Solutions Engineer - Paris/Grenoble  [arbeitnow:principal-thermal-solutions-engineer-paris-grenoble-264399]\n  Vinci | Paris / Grenoble | on-site | €120k-130k/year | today\n  skills: Python, C++\n  fit 50/100 | you have: Python | missing: C++\n  https://www.arbeitnow.fr/jobs/companies/vinci/principal-thermal-solutions-engineer-paris-grenoble-264399\n- Senior Integrated Operations Engineer  [arbeitnow:senior-integrated-operations-engineer-london-70391]\n  Rocket Lab Corporation | London, England, United Kingdom | on-site | today\n  skills: Python, Java\n  fit 50/100 | you have: Python | missing: Java\n  https://www.arbeitnow.co.uk/jobs/companies/rocket-lab-corporation/senior-integrated-operations-engineer-london-70391\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12",
+    "tool_calls": [
+     {
+      "name": "rank_jobs_for_me",
+      "args": {
+       "query": "engineer",
+       "skills": [
+        "Python",
+        "Klingon"
+       ],
+       "limit": 3
+      },
+      "ok": true,
+      "output_preview": "Ranked 404 of 614 postings for \"engineer\" against: Python.\nNot recognised (ignored in scoring): Klingon.\nMissing most often in the best matches: C++ (11), Linux (6), Testing (4), Rust (4), SQL (3), System design (3), Machine learning (2), Kubernetes (2).\n\n- AI Edge Deployment Engineer  [arbeitnow:ai-edge-deployment-engineer-berlin-181670]\n  Almetra | Onsite Berlin | on-site | €45k-58k/year | today\n  skills: Python, Linux\n  fit 50/100 | you have: Python | missing: Linux\n  https://www.arbeitnow.com/jobs/companies/almetra/ai-edge-deployment-engineer-berlin-181670\n- Principal Thermal Solutions Engineer - Paris/Grenoble  [arbeitnow:principal-thermal-solutions-engineer-paris-grenoble-264399]\n  Vinci | Paris / Grenoble | on-site | €120k-130k/year | today\n  skills: Python, C++\n  fit 50/100 | you have: Python | missing: C++\n  https://www.arbeitnow.fr/jobs/companies/vinci/principal-thermal-solutions-engineer-paris-grenoble-264399\n- Senior Integrated Operations Engineer  [arbeitnow:senior-integrated-operations-engineer-london-70391]\n  Rocket Lab Corporation | London, England, United Kingdom | on-site | today\n  skills: Python, Java\n  fit 50/100 | you have: Python | missing: Java\n  https://www.arbeitnow.co.uk/jobs/companies/rocket-lab-corporation/senior-integrated-operations-engineer-london-70391\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12"
+     }
+    ],
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0
+    },
+    "cost_usd": null,
+    "latency_ms": 795.6,
+    "turns": 1,
+    "data": {
+     "outputs": [
+      "Ranked 404 of 614 postings for \"engineer\" against: Python.\nNot recognised (ignored in scoring): Klingon.\nMissing most often in the best matches: C++ (11), Linux (6), Testing (4), Rust (4), SQL (3), System design (3), Machine learning (2), Kubernetes (2).\n\n- AI Edge Deployment Engineer  [arbeitnow:ai-edge-deployment-engineer-berlin-181670]\n  Almetra | Onsite Berlin | on-site | €45k-58k/year | today\n  skills: Python, Linux\n  fit 50/100 | you have: Python | missing: Linux\n  https://www.arbeitnow.com/jobs/companies/almetra/ai-edge-deployment-engineer-berlin-181670\n- Principal Thermal Solutions Engineer - Paris/Grenoble  [arbeitnow:principal-thermal-solutions-engineer-paris-grenoble-264399]\n  Vinci | Paris / Grenoble | on-site | €120k-130k/year | today\n  skills: Python, C++\n  fit 50/100 | you have: Python | missing: C++\n  https://www.arbeitnow.fr/jobs/companies/vinci/principal-thermal-solutions-engineer-paris-grenoble-264399\n- Senior Integrated Operations Engineer  [arbeitnow:senior-integrated-operations-engineer-london-70391]\n  Rocket Lab Corporation | London, England, United Kingdom | on-site | today\n  skills: Python, Java\n  fit 50/100 | you have: Python | missing: Java\n  https://www.arbeitnow.co.uk/jobs/companies/rocket-lab-corporation/senior-integrated-operations-engineer-london-70391\n\nBy source:\nRemotive (remote jobs): 5\nArbeitnow (Europe): 268\nHacker News 'Who is hiring?': 193\nAdzuna (Spain and 15+ countries): skipped (needs ADZUNA_APP_ID and ADZUNA_APP_KEY (free at developer.adzuna.com))\nHimalayas (remote jobs): 41\nJobicy (remote, Spain/Europe): 49\nRemote OK (remote jobs): 24\nCompany career pages (Greenhouse, Lever, Ashby): 0\nWe Work Remotely (remote jobs): 22\nWorking Nomads (remote jobs): 12"
+     ],
+     "errors": [
+      false
+     ],
+     "first_id": "arbeitnow:ai-edge-deployment-engineer-berlin-181670"
+    },
+    "error": null
+   }
+  }
+ ]
+}

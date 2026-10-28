@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+# Run history and the generated report are local; baselines/ holds the committed reference runs.
+results/
+report/
+# Recorded job-board traffic: third-party listings, some with contact details. Kept local, never committed.
+cassettes/
+targets/
