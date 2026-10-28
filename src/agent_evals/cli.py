@@ -27,6 +27,14 @@ if hasattr(sys.stdout, "reconfigure"):
 
 def _print_case(r: CaseResult) -> None:
     mark = typer.style("PASS", fg="green") if r.passed else typer.style("FAIL", fg="red")
+    if r.attempts:
+        scores = ",".join("-" if a.judge_score is None else f"{a.judge_score:g}" for a in r.attempts)
+        lat = "/".join(f"{a.latency_ms / 1000:.0f}" for a in r.attempts)
+        typer.echo(f"  {mark} {r.id:<34} {r.attempts_passed}/{len(r.attempts)} attempts · {lat}s · judge {scores}")
+        for i, a in enumerate(r.attempts, 1):
+            for name in a.failed_checks:
+                typer.echo(f"         ✖ #{i} {name}")
+        return
     judge = f" judge={r.judge.score:g}" if r.judge and r.judge.score is not None else ""
     typer.echo(f"  {mark} {r.id:<34} {r.trace.latency_ms / 1000:6.1f}s {r.trace.usage.total:>7} tok{judge}")
     for c in r.checks:
@@ -51,6 +59,7 @@ def run(
     gate: Annotated[bool, typer.Option("--gate", help="Fail (exit 1) if the run regressed against the baseline.")] = False,
     baseline: Annotated[Optional[Path], typer.Option(help="Baseline run JSON. Default: the previous run of this suite.")] = None,
     skip_metric: Annotated[Optional[list[str]], typer.Option("--skip-metric", help="Metric the gate ignores, e.g. latency_p50_ms.")] = None,
+    repeat: Annotated[int, typer.Option(help="Run every case N times; a case passes only if all N pass.")] = 1,
     save: Annotated[bool, typer.Option(help="Store the run under --results.")] = True,
     report: Annotated[Optional[Path], typer.Option(help="Also write the HTML report here.")] = None,
 ):
@@ -60,7 +69,7 @@ def run(
     j = None if no_judge else Judge(make_client(judge, **({"num_ctx": 16384} if judge.startswith("ollama:") else {})))
     typer.echo(f"{suite.suite} v{suite.version} · {len(suite.cases)} case(s) · target {suite.target.get('type')} · judge {j.spec if j else 'off'}")
     previous = list_runs(results, suite.suite)
-    result = run_suite(suite, j, on_case=_print_case)
+    result = run_suite(suite, j, on_case=_print_case, repeat=repeat)
     s = result.summary
     typer.echo(
         f"\n{s.passed}/{s.cases} passed · task success {s.task_success_rate:.0%}"
@@ -68,6 +77,8 @@ def run(
         + (f" · judge {s.judge_mean:.2f}/5" if s.judge_mean is not None else "")
         + f" · p50 {s.latency_p50_ms / 1000:.1f}s p95 {s.latency_p95_ms / 1000:.1f}s · {s.tokens_total} tokens · ${s.cost_usd_total:.4f}"
     )
+    if s.repeats > 1:
+        typer.echo(f"{s.repeats} attempts per case · {s.attempt_pass_rate:.0%} of attempts passed · flaky: {', '.join(s.flaky_cases) or 'none'}")
     if save:
         typer.echo(f"saved {save_run(result, results)}")
     if report:

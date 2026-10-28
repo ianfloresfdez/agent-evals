@@ -74,3 +74,18 @@ def test_make_client_specs():
     assert make_client("ollama:gemma4:12b").model == "gemma4:12b"
     with pytest.raises(ValueError, match="provider:model"):
         make_client("nope")
+
+
+def test_repeats_merge_and_flaky_summary():
+    from agent_evals.metrics import summarize
+    from agent_evals.runner import merge_attempts
+
+    suite = _suite(id="c", input="q", expect={"output": [{"contains": "jobs"}]})
+    ok = score_case(suite.cases[0], Trace(output="jobs", latency_ms=100, usage=Usage(input_tokens=10)), suite, None, "q")
+    bad = score_case(suite.cases[0], Trace(output="nothing", latency_ms=300, usage=Usage(input_tokens=30)), suite, None, "q")
+    merged = merge_attempts([ok, bad, ok])
+    assert not merged.passed and merged.flaky and merged.attempts_passed == 2
+    assert merged.attempts[1].failed_checks
+    s = summarize([merged])
+    assert (s.repeats, s.attempt_pass_rate, s.flaky_cases, s.tokens_mean) == (3, 0.6667, ["c"], 16.7)
+    assert s.latency_p50_ms == 100 and merge_attempts([ok]) is ok

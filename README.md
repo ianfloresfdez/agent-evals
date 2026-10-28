@@ -37,11 +37,12 @@ The judge added 13,654 tokens on the agent suite and 5,204 on the jack suite. A 
 
 ### What the runs caught
 
-The history in `results/` (not committed) holds three runs of the agent suite. The first two did not pass, and both failures taught something:
+The history in `results/` (not committed) holds four runs of the agent suite. The first two did not pass, and both failures taught something:
 
 1. **Run 1: 6/8, and the failures were in the harness.** The judge gave 2/5 to two answers and called postings from the tool output "invented". They were not: the judge only saw the first 1,500 characters of each tool result, and those postings came later in the text. Fix: the judge now sees exactly what the model saw (up to 6,000 characters per tool call), and Ollama gets a larger context window for the judge. A unit test covers it.
 2. **Run 2: 5/8, and the gate failed as designed.** Another workload was using the same GPU, so one case hit the 300 s HTTP timeout and two went over the 120 s latency budget. `--gate` reported `regressed: market-skills-and-pay` and exited 1.
 3. **Run 3: 8/8** on a free GPU. The gate passed and listed the three fixed cases.
+4. **Run 4: `--repeat 3`, 24/24 attempts passed, no flaky case.** p50 18.3 s, p95 33.2 s, 101,800 agent tokens (≈4,240 per attempt), judge 5/5 on every attempt. The whole run took 9.3 minutes.
 
 ![one case expanded: checks, tool calls, judge reasoning and answer](docs/report-jobscout-agent-case.png)
 
@@ -49,7 +50,8 @@ The history in `results/` (not committed) holds three runs of the agent suite. T
 
 - **The judge is the same model as the agent.** A local 12B model grading itself is free and fast, but it is lenient: every non-control answer got 5/5. The negative control shows it can say "wrong" (it gave 1/5 to a spec about money formatting for a dark-mode ticket). But in the jack suite it also gave 5/5 to an intake that added a criterion the ticket never asked for ("negative values keep their sign"). For real decisions, run the judge on a stronger model (`--judge openai:…` or `--judge anthropic:…`) and compare.
 - **jack is measured in mock mode.** That validates the orchestration, guardrails and approval policy, not the quality of the Claude agents. The adapter supports `agent_mode: live`; a live run costs tokens and is not included here.
-- **Eight cases per suite is a smoke test, not a benchmark.** Variance across repeated runs is not measured yet. Expect more cases, and repeats with a pass rate per case, in the next version of the golden sets.
+- **Eight cases per suite is a smoke test, not a benchmark.** Expect more cases in the next version of the golden sets.
+- **No flakiness at temperature 0 says little about robustness.** The agent runs at temperature 0 with a fixed seed. Across the three repeats every case made the same tool calls, and tokens varied by under 2%, only on the first attempt. Repeats here mostly catch infrastructure noise (GPU contention, timeouts). To measure how the agent behaves when sampling, set `temperature: 0.7` and `seed: null` in the target config and repeat.
 
 ## How it works
 
@@ -90,7 +92,7 @@ Expectations use small matchers (`equals`, `contains`, `contains_all`, `regex`, 
 | Latency | Wall time per case, reported as p50 and p95 |
 | Tokens and cost | Summed over every model call of the case. Local models cost $0; API prices are set per suite (`price_per_mtok`) |
 
-A case **passes** when its deterministic checks, budgets and judge threshold all pass.
+A case **passes** when its deterministic checks, budgets and judge threshold all pass. With `--repeat N` every case runs N times. It passes only if all N attempts pass, and the run reports the share of attempts that passed and which cases are flaky (passed some attempts, failed others). Latency, tokens and judge scores are then aggregated over every attempt.
 
 ### LLM judge
 
@@ -165,6 +167,7 @@ agent-evals run golden/jobscout/agent.v1.yaml                     # local LLM ag
 agent-evals run golden/jobscout/agent.v1.yaml --judge openai:gpt-4.1-mini   # another judge
 agent-evals run golden/jack/pipeline.v1.yaml --gate               # exit 1 if worse than the last run
 agent-evals report                                                 # report/index.html
+agent-evals run golden/jobscout/agent.v1.yaml --repeat 3           # 3 attempts per case, flaky cases reported
 agent-evals list                                                   # run history
 ```
 

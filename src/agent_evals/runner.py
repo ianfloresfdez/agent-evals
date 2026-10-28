@@ -12,7 +12,7 @@ from typing import Callable
 
 from . import metrics
 from .judge import Judge
-from .schema import Case, CaseResult, Check, RunResult, Suite, Trace
+from .schema import Attempt, Case, CaseResult, Check, RunResult, Suite, Trace
 from .targets import make_target
 
 
@@ -46,7 +46,30 @@ def score_case(case: Case, trace: Trace, suite: Suite, judge: Judge | None, judg
     )
 
 
-def run_suite(suite: Suite, judge: Judge | None = None, on_case: Callable[[CaseResult], None] | None = None) -> RunResult:
+def _attempt(r: CaseResult) -> Attempt:
+    return Attempt(
+        passed=r.passed, task_success=r.task_success, latency_ms=r.trace.latency_ms, tokens=r.trace.usage.total,
+        cost_usd=r.trace.cost_usd or 0.0, judge_score=r.judge.score if r.judge else None,
+        judge_tokens=r.judge.usage.total if r.judge else 0, tool_recall=r.tool_recall, tool_precision=r.tool_precision,
+        tool_calls=[c.name for c in r.trace.tool_calls], failed_checks=[c.name for c in r.checks if not c.passed],
+        error=r.trace.error,
+    )
+
+
+def merge_attempts(results: list[CaseResult]) -> CaseResult:
+    """Folds repeated executions of one case into a single result that passes only if every attempt passed."""
+    first = results[0]
+    if len(results) == 1:
+        return first
+    return first.model_copy(update={
+        "attempts": [_attempt(r) for r in results],
+        "passed": all(r.passed for r in results),
+        "task_success": all(r.task_success for r in results),
+    })
+
+
+def run_suite(suite: Suite, judge: Judge | None = None, on_case: Callable[[CaseResult], None] | None = None,
+              repeat: int = 1) -> RunResult:
     started = datetime.now(timezone.utc)
     t0 = time.perf_counter()
     target = make_target(suite.target, Path(suite.path).parent)
@@ -54,8 +77,8 @@ def run_suite(suite: Suite, judge: Judge | None = None, on_case: Callable[[CaseR
     with target:
         info = target.describe()
         for case in suite.cases:
-            trace = target.run(case)
-            res = score_case(case, trace, suite, judge, target.judge_input(case))
+            runs = [score_case(case, target.run(case), suite, judge, target.judge_input(case)) for _ in range(max(1, repeat))]
+            res = merge_attempts(runs)
             results.append(res)
             if on_case:
                 on_case(res)

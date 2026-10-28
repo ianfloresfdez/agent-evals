@@ -6,7 +6,7 @@ import re
 import statistics
 from typing import Any
 
-from .schema import Budgets, CaseResult, Check, Expect, Summary, ToolCall, ToolExpectation, ToolsExpect, Trace
+from .schema import Attempt, Budgets, CaseResult, Check, Expect, Summary, ToolCall, ToolExpectation, ToolsExpect, Trace
 
 # ── Matchers ──────────────────────────────────────────────────────────────────
 # A matcher is either a literal (compared with ==) or a dict with one or more operators.
@@ -167,24 +167,41 @@ def _mean(values: list[float]) -> float | None:
     return round(statistics.fmean(values), 4) if values else None
 
 
+def _attempts(r: CaseResult) -> list[Attempt]:
+    if r.attempts:
+        return r.attempts
+    return [Attempt(
+        passed=r.passed, task_success=r.task_success, latency_ms=r.trace.latency_ms, tokens=r.trace.usage.total,
+        cost_usd=r.trace.cost_usd or 0.0, judge_score=r.judge.score if r.judge else None,
+        judge_tokens=r.judge.usage.total if r.judge else 0, tool_recall=r.tool_recall, tool_precision=r.tool_precision,
+        error=r.trace.error,
+    )]
+
+
 def summarize(results: list[CaseResult]) -> Summary:
+    """Pass rates are per case (strict when repeated); latency, tokens, cost and judge scores are per attempt."""
     n = len(results)
-    lat = [r.trace.latency_ms for r in results]
-    tokens = [r.trace.usage.total for r in results]
-    judged = [r.judge.score for r in results if r.judge and r.judge.score is not None and not r.judge_control]
+    att = [(r, a) for r in results for a in _attempts(r)]
+    lat = [a.latency_ms for _, a in att]
+    tokens = [a.tokens for _, a in att]
+    judged = [a.judge_score for r, a in att if a.judge_score is not None and not r.judge_control]
+    repeats = max((len(r.attempts) for r in results), default=1) or 1
     return Summary(
         cases=n,
         passed=sum(r.passed for r in results),
         pass_rate=round(sum(r.passed for r in results) / n, 4) if n else 0.0,
         task_success_rate=round(sum(r.task_success for r in results) / n, 4) if n else 0.0,
-        tool_recall_mean=_mean([r.tool_recall for r in results if r.tool_recall is not None]),
-        tool_precision_mean=_mean([r.tool_precision for r in results if r.tool_precision is not None]),
+        tool_recall_mean=_mean([a.tool_recall for _, a in att if a.tool_recall is not None]),
+        tool_precision_mean=_mean([a.tool_precision for _, a in att if a.tool_precision is not None]),
         judge_mean=_mean(judged),
         latency_p50_ms=round(percentile(lat, 50), 1),
         latency_p95_ms=round(percentile(lat, 95), 1),
         tokens_total=sum(tokens),
-        tokens_mean=round(sum(tokens) / n, 1) if n else 0.0,
-        cost_usd_total=round(sum(r.trace.cost_usd or 0.0 for r in results), 6),
-        judge_tokens_total=sum(r.judge.usage.total for r in results if r.judge),
-        errors=sum(r.trace.error is not None for r in results),
+        tokens_mean=round(sum(tokens) / len(tokens), 1) if tokens else 0.0,
+        cost_usd_total=round(sum(a.cost_usd for _, a in att), 6),
+        judge_tokens_total=sum(a.judge_tokens for _, a in att),
+        errors=sum(a.error is not None for _, a in att),
+        repeats=repeats,
+        attempt_pass_rate=round(sum(a.passed for _, a in att) / len(att), 4) if repeats > 1 else None,
+        flaky_cases=[r.id for r in results if r.flaky],
     )

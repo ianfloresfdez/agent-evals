@@ -67,11 +67,12 @@ details summary { cursor: pointer; color: var(--accent); font-size: 12.5px; }
     <div class="kpi"><div class="v">{{ m.passed }}/{{ m.cases }}</div><div class="l">cases passed ({{ m.pass_rate|pct }})</div>
       {% if s.spark_pass %}<svg width="120" height="28" aria-label="pass rate trend"><polyline points="{{ s.spark_pass }}" fill="none" stroke="var(--accent)" stroke-width="1.5"/></svg>{% endif %}</div>
     <div class="kpi"><div class="v">{{ m.task_success_rate|pct }}</div><div class="l">task success (deterministic)</div></div>
+    {% if m.repeats > 1 %}<div class="kpi"><div class="v">{{ m.attempt_pass_rate|pct }}</div><div class="l">of {{ m.repeats }}×{{ m.cases }} attempts passed · {{ m.flaky_cases|length }} flaky</div></div>{% endif %}
     {% if m.tool_recall_mean is not none %}<div class="kpi"><div class="v">{{ m.tool_recall_mean|pct }} / {{ m.tool_precision_mean|pct }}</div><div class="l">tool recall / precision</div></div>{% endif %}
     {% if m.judge_mean is not none %}<div class="kpi"><div class="v">{{ '%.2f'|format(m.judge_mean) }}<span class="meta"> /5</span></div><div class="l">LLM judge mean</div></div>{% endif %}
     <div class="kpi"><div class="v">{{ m.latency_p50_ms|ms }}</div><div class="l">latency p50 · p95 {{ m.latency_p95_ms|ms }}</div>
       {% if s.spark_latency %}<svg width="120" height="28" aria-label="latency trend"><polyline points="{{ s.spark_latency }}" fill="none" stroke="var(--muted)" stroke-width="1.5"/></svg>{% endif %}</div>
-    <div class="kpi"><div class="v">{{ '{:,}'.format(m.tokens_total) }}</div><div class="l">agent tokens ({{ '%.0f'|format(m.tokens_mean) }}/case)</div></div>
+    <div class="kpi"><div class="v">{{ '{:,}'.format(m.tokens_total) }}</div><div class="l">agent tokens ({{ '%.0f'|format(m.tokens_mean) }}/{{ 'attempt' if m.repeats > 1 else 'case' }})</div></div>
     <div class="kpi"><div class="v">${{ '%.4f'|format(m.cost_usd_total) }}</div><div class="l">cost{% if m.judge_tokens_total %} · judge {{ '{:,}'.format(m.judge_tokens_total) }} tok{% endif %}</div></div>
   </div>
   {% if s.cmp %}<p class="cmp">vs {{ s.cmp.baseline_id }}:
@@ -79,6 +80,7 @@ details summary { cursor: pointer; color: var(--accent); font-size: 12.5px; }
     {% if s.cmp.regressed_cases %} · <b class="bad">regressed: {{ s.cmp.regressed_cases|join(', ') }}</b>{% endif %}
     {% if s.cmp.suite_changed %} · golden set changed{% endif %}</p>{% endif %}
   <div class="tbl"><table>
+    {% if m.repeats > 1 %}<p class="cmp">Each case ran {{ m.repeats }} times; a case passes only if every attempt passed. Details below show the first attempt.</p>{% endif %}
     <thead><tr><th>case</th><th>result</th><th class="num">checks</th><th class="num">tools</th><th class="num">judge</th><th class="num">latency</th><th class="num">tokens</th></tr></thead>
     <tbody>
     {% for c in r.cases %}{% set ok = c.checks|selectattr('passed')|list|length %}
@@ -86,13 +88,15 @@ details summary { cursor: pointer; color: var(--accent); font-size: 12.5px; }
       <td><b>{{ c.id }}</b><br>{% for t in c.tags %}<span class="tag">{{ t }}</span>{% endfor %}
         <details><summary>details</summary><div class="detail">
           <ul>{% for k in c.checks %}<li class="{{ '' if k.passed else 'f' }}">{{ '✔' if k.passed else '✖' }} {{ k.name }}{% if k.detail %} — {{ k.detail }}{% endif %}</li>{% endfor %}</ul>
+          {% if c.attempts %}<pre>{% for a in c.attempts %}#{{ loop.index }} {{ 'pass' if a.passed else 'FAIL' }} · {{ a.latency_ms|ms }} · {{ a.tokens }} tok · judge {{ a.judge_score if a.judge_score is not none else '—' }} · {{ a.tool_calls|join(' → ') or 'no tools' }}{% if a.failed_checks %} · ✖ {{ a.failed_checks|join('; ') }}{% endif %}
+{% endfor %}</pre>{% endif %}
           {% if c.trace.tool_calls %}<pre>{% for t in c.trace.tool_calls %}{{ t.name }}({{ t.args|tojson }}){{ '' if t.ok else '  ✖ error' }}
 {% endfor %}</pre>{% endif %}
           {% if c.judge %}<pre>judge {{ c.judge.model }}: {{ c.judge.score if c.judge.score is not none else 'n/a' }}/5 — {{ c.judge.reasoning or c.judge.error }}</pre>{% endif %}
           {% if c.trace.error %}<pre>error: {{ c.trace.error }}</pre>{% endif %}
           <pre>{{ c.trace.output[:3000] }}</pre>
         </div></details></td>
-      <td><span class="pill {{ 'ok' if c.passed else 'bad' }}">{{ 'pass' if c.passed else 'fail' }}</span></td>
+      <td><span class="pill {{ 'ok' if c.passed else 'bad' }}">{{ 'pass' if c.passed else ('flaky' if c.flaky else 'fail') }}</span>{% if c.attempts %}<br><span class="meta">{{ c.attempts_passed }}/{{ c.attempts|length }} attempts</span>{% endif %}</td>
       <td class="num">{{ ok }}/{{ c.checks|length }}</td>
       <td class="num">{% if c.tool_recall is not none %}{{ c.tool_recall|pct }} · {{ c.tool_precision|pct }}{% else %}{{ c.trace.tool_calls|length }} calls{% endif %}</td>
       <td class="num">{{ '%g'|format(c.judge.score) if c.judge and c.judge.score is not none else '—' }}</td>

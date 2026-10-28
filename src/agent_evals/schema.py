@@ -137,6 +137,23 @@ class JudgeVerdict(BaseModel):
     error: str | None = None
 
 
+class Attempt(BaseModel):
+    """One execution of a case when it runs more than once (--repeat)."""
+
+    passed: bool
+    task_success: bool
+    latency_ms: float
+    tokens: int
+    cost_usd: float = 0.0
+    judge_score: float | None = None
+    judge_tokens: int = 0
+    tool_recall: float | None = None
+    tool_precision: float | None = None
+    tool_calls: list[str] = Field(default_factory=list)
+    failed_checks: list[str] = Field(default_factory=list)
+    error: str | None = None
+
+
 class CaseResult(BaseModel):
     id: str
     tags: list[str] = Field(default_factory=list)
@@ -148,7 +165,18 @@ class CaseResult(BaseModel):
     judge: JudgeVerdict | None = None
     # Negative controls (expect.judge.max_score) check the judge itself and stay out of judge_mean.
     judge_control: bool = False
+    # The detailed checks and trace are from the first attempt; every attempt is summarised here.
+    # With repeats, a case passes only if every attempt passed.
+    attempts: list[Attempt] = Field(default_factory=list)
     trace: Trace
+
+    @property
+    def attempts_passed(self) -> int:
+        return sum(a.passed for a in self.attempts) if self.attempts else int(self.passed)
+
+    @property
+    def flaky(self) -> bool:
+        return 0 < self.attempts_passed < len(self.attempts)
 
 
 class Summary(BaseModel):
@@ -166,6 +194,10 @@ class Summary(BaseModel):
     cost_usd_total: float
     judge_tokens_total: int = 0
     errors: int = 0
+    # Filled when cases run more than once: per-attempt pass rate and cases that both passed and failed
+    repeats: int = 1
+    attempt_pass_rate: float | None = None
+    flaky_cases: list[str] = Field(default_factory=list)
 
 
 class RunResult(BaseModel):

@@ -1,5 +1,5 @@
 {
- "run_id": "20261028T082755Z",
+ "run_id": "20261028T140532Z",
  "suite": "jobscout-agent",
  "suite_version": 1,
  "suite_sha256": "177eef3cf512",
@@ -13,8 +13,8 @@
   "max_turns": 6
  },
  "judge": "ollama:gemma4:12b",
- "started_at": "2026-10-28T08:27:55+00:00",
- "duration_s": 244.9,
+ "started_at": "2026-10-28T14:05:32+00:00",
+ "duration_s": 558.1,
  "environment": {
   "python": "3.12.16",
   "platform": "Windows-11"
@@ -27,13 +27,16 @@
   "tool_recall_mean": 1.0,
   "tool_precision_mean": 1.0,
   "judge_mean": 5.0,
-  "latency_p50_ms": 24091.2,
-  "latency_p95_ms": 34506.4,
-  "tokens_total": 33974,
-  "tokens_mean": 4246.8,
+  "latency_p50_ms": 18324.7,
+  "latency_p95_ms": 33234.3,
+  "tokens_total": 101800,
+  "tokens_mean": 4241.7,
   "cost_usd_total": 0.0,
-  "judge_tokens_total": 13654,
-  "errors": 0
+  "judge_tokens_total": 40795,
+  "errors": 0,
+  "repeats": 3,
+  "attempt_pass_rate": 1.0,
+  "flaky_cases": []
  },
  "cases": [
   {
@@ -65,7 +68,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "34846 ms",
+     "detail": "33095 ms",
      "kind": "budget"
     },
     {
@@ -91,10 +94,60 @@
      "input_tokens": 1420,
      "output_tokens": 78
     },
-    "latency_ms": 8257.0,
+    "latency_ms": 7919.8,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 33095.4,
+     "tokens": 3803,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 1498,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "market_snapshot"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 15685.0,
+     "tokens": 3714,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 1402,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "market_snapshot"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 15545.2,
+     "tokens": 3714,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 1405,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "market_snapshot"
+     ],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "For AI Engineer roles in Europe, the current market shows a high demand for both core machine learning expertise and modern generative AI implementation skills.\n\n### **Key Skills in Demand**\nThe most frequently requested skills across current postings include:\n*   **Core AI & LLMs:** **LLMs** (42%), **AI Agents** (42%), and **Machine Learning** (36%) are the primary focus areas.\n*   **Programming Languages:** **Python** is the dominant language (48%), followed by **TypeScript** (35%), **Rust** (18%), and **Go** (18%).\n*   **Infrastructure & DevOps:** **AWS** (26%), **Kubernetes** (20%), and **CI/CD** (20%) are frequently required for deploying models at scale.\n*   **Frontend/Fullstack:** Interestingly, a significant number of roles also ask for **React** (31%) and **Next.js** (16%), suggesting a trend toward \"Full-stack AI\" roles where engineers build the end-to-end user experience.\n*   **Data & Systems:** **System Design** (32%), **SQL** (20%), and **PostgreSQL** (15%) remain foundational requirements.\n\n### **Salary Insights**\nFor the 28% of postings that disclose salary information, the annualized midpoints are:\n*   **EUR:** Median of **€132,000** (with the middle half ranging from €107k to €139k).\n*   **USD:** Median of **$225,000** (with the middle half ranging from $150k to $230k).\n\n### **Remote Work Trends**\nThe market for these roles in Europe is highly flexible, with **99%** of the identified postings offering remote work options.\n\n### **Top Hiring Companies**\nSeveral companies are currently showing multiple openings for AI-related roles in this region, including:\n*   **Lemon.io** (9 openings)\n*   **Ashby** (4 openings)\n*   **Canonical** (3 openings)\n*   **Nebius** (3 openings)\n*   **RevenueCat** (3 openings)",
     "tool_calls": [
@@ -113,7 +166,7 @@
      "output_tokens": 508
     },
     "cost_usd": 0.0,
-    "latency_ms": 34845.8,
+    "latency_ms": 33095.4,
     "turns": 2,
     "data": {
      "tool_names": [
@@ -154,7 +207,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "29776 ms",
+     "detail": "27153 ms",
      "kind": "budget"
     },
     {
@@ -180,10 +233,60 @@
      "input_tokens": 2695,
      "output_tokens": 64
     },
-    "latency_ms": 13664.8,
+    "latency_ms": 13974.3,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 27152.8,
+     "tokens": 5073,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 2759,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 26989.7,
+     "tokens": 5073,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 2761,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 25040.9,
+     "tokens": 5073,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 2761,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs"
+     ],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "I found several remote Python jobs posted in the last week. Here are some of the highlights:\n\n### Data & Machine Learning\n*   **Senior ML Engineer (Agentic Search)** at **Nebius** (Europe)\n    *   **Skills:** Python, C++, LLMs, AI agents, Embeddings, Evals, Hugging Face, Machine learning\n    *   [source:jobicy:157433]\n*   **Senior ML Engineer (AI Research)** at **Nebius** (Europe, Israel)\n    *   **Skills:** Python, LLMs, AI agents, Machine learning, CI/CD\n    *   [source:jobicy:157434]\n*   **Senior Machine Learning Engineer, LLM Inference Optimization** at **Nebius** (Europe, Israel)\n    *   **Skills:** Python, LLMs, AI agents, PyTorch, Machine learning, Node.js\n    *   [source:jobicy:157431]\n*   **Lead Data Scientist, Product** at **Descript** (Anywhere in the World)\n    *   **Skills:** Python, SQL, OpenAI API, Spark\n    *   [source:weworkremotely:descript-lead-data-scientist-product]\n*   **Python Developer (with Machine Learning knowledge)** at **DevGrid** (Worldwide)\n    *   **Skills:** Python, SQL, Machine learning, Django, Flask, Redis, Pandas, AWS\n    *   [source:himalayas:companies/devgrid/jobs/python-developer-with-machine-learning-knowledge-931698575]\n\n### Engineering & Infrastructure\n*   **Sr. Data Engineer** at **Carrot** (Anywhere in the World)\n    *   **Skills:** Python, SQL, Airflow, dbt, Snowflake, AWS, GCP, System design\n    *   [source:weworkremotely:carrot-sr-data-engineer]\n*   **Senior Cloud / DevOps Engineer** at **Rockstardevelopers GmbH** (Berlin/Remote)\n    *   **Skills:** Python, Claude, Kafka, AWS, GCP, Azure, Docker, Kubernetes\n    *   [source:arbeitnow:senior-cloud-devops-engineer-aws-kubernetes-openshift-stuttgart-311937]\n*   **Senior Site Reliability Engineer (SRE)** at **Makersite GmbH** (Remote)\n    *   **Skills:** Python, AWS, Azure, Terraform\n    *   [source:arbeitnow:remote-senior-site-reliability-engineer-sre-berlin-347745]\n*   **Senior Database Reliability Engineer I** at **Storyblok** (Germany/Austria/UK)\n    *   **Skills:** Python, Rust, Ruby, Vector databases, Rails, PostgreSQL, Redis, Snowflake\n    *   [source:weworkremotely:storyblok-senior-database-reliability-engineer-i-germany-austria-uk]\n\n### Other Roles\n*   **Business Intelligence Analyst (Contractor)** at **Doximity** (Anywhere in the World)\n    *   **Skills:** Python, SQL, Pandas\n    *   [source:weworkremotely:doximity-business-intelligence-analyst-contractor]\n*   **Technical Account Manager** at **Camunda** (Remote - DACH or Nordics regions)\n    *   **Skills:** Python, Java, C#, AI agents, AWS, Azure, Kubernetes\n    *   [source:arbeitnow:remote-technical-account-manager-dach-470630] | [source:arbeitnow:remote-technical-account-manager-nordics-345486]",
     "tool_calls": [
@@ -203,7 +306,7 @@
      "output_tokens": 860
     },
     "cost_usd": 0.0,
-    "latency_ms": 29776.1,
+    "latency_ms": 27152.8,
     "turns": 2,
     "data": {
      "tool_names": [
@@ -238,7 +341,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "25615 ms",
+     "detail": "23816 ms",
      "kind": "budget"
     },
     {
@@ -264,10 +367,60 @@
      "input_tokens": 2389,
      "output_tokens": 72
     },
-    "latency_ms": 12646.8,
+    "latency_ms": 12514.6,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 23816.3,
+     "tokens": 4820,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 2461,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "rank_jobs_for_me"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 22158.1,
+     "tokens": 4810,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 2446,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "rank_jobs_for_me"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 22344.6,
+     "tokens": 4810,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 2446,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "rank_jobs_for_me"
+     ],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "Based on your skills (**Python, FastAPI, Docker, PostgreSQL, AWS**), here is a ranking of backend engineer roles that best match your profile, followed by an analysis of what you are missing most often.\n\n### Top Ranked Matches\n1. **Backend Software Engineer** [hn:49925489]\n   - **Company:** Enveritas\n   - **Fit:** 80/100\n   - **Matched Skills:** Python, PostgreSQL, AWS, Docker\n   - **Missing:** Terraform\n2. **Senior Backend Engineer** [arbeitnow:remote-senior-backend-engineer-paris-287438]\n   - **Company:** Payflows\n   - **Fit:** 57/100\n   - **Matched Skills:** Python, FastAPI, PostgreSQL, AWS\n   - **Missing:** Rust, AI agents, System design\n3. **Staff Platform/Backend Engineer (Python/ Django)** [himalayas:companies/mts-moose-tech-solutions/jobs/staff-platform-backend-engineer-python-django]\n   - **Company:** MTS Moose Tech Solutions\n   - **Fit:** 50/100\n   - **Matched Skills:** Python, AWS, Docker\n   - **Missing:** Django, Kubernetes, CI/CD\n\n---\n\n### What you are missing most often\nTo move into more senior or specialized backend roles, the following skills appear most frequently in the job descriptions for your target roles:\n\n*   **System Design (Most Frequent):** This is the most common gap. Many senior roles require a deep understanding of architecture, scalability, and distributed systems.\n*   **Kubernetes:** While you have Docker experience, many companies are looking for orchestration experience with Kubernetes.\n*   **CI/CD:** Experience with automated deployment pipelines (GitHub Actions, Jenkins, etc.) is a standard requirement for \"Staff\" or \"Senior\" levels.\n*   **AI/LLM Integration:** There is a growing trend of backend roles requiring experience with **LLMs**, **AI agents**, and **Prompt Engineering**.\n*   **Infrastructure as Code (IaC):** Specifically **Terraform**, which often pairs with your existing AWS knowledge.\n*   **Secondary Languages:** Several high-paying roles also look for **Rust** or **Go** alongside Python.",
     "tool_calls": [
@@ -293,7 +446,7 @@
      "output_tokens": 547
     },
     "cost_usd": 0.0,
-    "latency_ms": 25614.9,
+    "latency_ms": 23816.3,
     "turns": 2,
     "data": {
      "tool_names": [
@@ -333,7 +486,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "33876 ms",
+     "detail": "32639 ms",
      "kind": "budget"
     },
     {
@@ -359,10 +512,63 @@
      "input_tokens": 3710,
      "output_tokens": 69
     },
-    "latency_ms": 18825.6,
+    "latency_ms": 19472.2,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 32639.4,
+     "tokens": 9159,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 3779,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs",
+      "get_job"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 33559.8,
+     "tokens": 9253,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 3875,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs",
+      "get_job"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 33258.8,
+     "tokens": 9253,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 3875,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs",
+      "get_job"
+     ],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "The most recent Python job found is for a **Sr. Data Engineer** at **Carrot**.\n\n### **Job Overview**\n*   **Company:** Carrot\n*   **Location:** Remote (Anywhere in the World)\n*   **Salary:** Not published\n*   **Posted:** Today\n*   **Source:** [weworkremotely:carrot-sr-data-engineer]\n\n### **Full Description**\n**About Carrot:**\nCarrot is a leading global fertility and family care platform. They provide clinical guidance and support for millions of members across 195 countries, focusing on everything from pre-pregnancy to menopause.\n\n**The Opportunity:**\nCarrot is looking for a Sr. Data Engineer to lead the evolution, reliability, and scalability of their modern data infrastructure. You will architect, build, and maintain robust, automated data pipelines, orchestrate workflows, and partner with stakeholders to deliver secure, high-quality data solutions. Your work will span the full data lifecycle, including ETL/ELT pipelines, real-time and batch integrations, and automating reporting to reduce technical debt.\n\n**What You’ll Own:**\n*   Architect, build, test, and deploy scalable ETL/ELT pipelines using **Python**, **dbt**, and orchestration tools like **Prefect** and **Airflow**.\n*   Administer and optimize cloud-based platforms including **Snowflake**, **AWS (S3, Redshift)**, and **Google Cloud**.\n*   Orchestrate data workflows with custom scheduling, alerting, and dependency management.\n*   Design secure external data flows via SFTP, Files.com, and APIs.\n*   Automate manual reporting and operational tasks.\n*   Partner with backend engineers to optimize production database schemas.\n*   Strengthen data quality, lineage, governance, and documentation.\n*   Mentor teammates and reinforce best practices in version control and code review.\n\n**About You:**\n*   Expert-level proficiency in **Snowflake**, **dbt**, and **Python**.\n*   Advanced **SQL** skills for complex querying and large-scale data model design.\n*   Proven experience with modern orchestration tools (Prefect, Airflow).\n*   Hands-on experience with AWS and Google Cloud.\n*   Mastery of version control (Git, GitHub) and Jira.\n*   Ability to automate complex manual tasks and thrive in dynamic environments.\n\n**Nice to Have:**\n*   Experience in startup or rapid-growth environments.\n*   Background supporting BI, analytics, and data science teams.",
     "tool_calls": [
@@ -388,7 +594,7 @@
      "output_tokens": 584
     },
     "cost_usd": 0.0,
-    "latency_ms": 33876.1,
+    "latency_ms": 32639.4,
     "turns": 3,
     "data": {
      "tool_names": [
@@ -441,7 +647,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "10328 ms",
+     "detail": "8188 ms",
      "kind": "budget"
     },
     {
@@ -467,10 +673,60 @@
      "input_tokens": 596,
      "output_tokens": 73
     },
-    "latency_ms": 5061.5,
+    "latency_ms": 5085.4,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 8187.9,
+     "tokens": 2963,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 669,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "list_sources"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 6965.8,
+     "tokens": 2963,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 657,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "list_sources"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 4876.2,
+     "tokens": 2963,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 657,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "list_sources"
+     ],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "I can search the following job boards:\n\n**Ready to use:**\n*   **Remotive** (Remote jobs)\n*   **Arbeitnow** (Europe-focused)\n*   **Hacker News** ('Who is hiring?' section)\n*   **Himalayas** (Remote jobs)\n*   **Jobicy** (Remote, Spain/Europe)\n*   **Remote OK** (Remote jobs)\n*   **Company Career Pages** (Greenhouse, Lever, Ashby)\n*   **We Work Remotely** (Remote jobs)\n*   **Working Nomads** (Remote jobs)\n\n**Requires an API key:**\n*   **Adzuna** (Spain and 15+ countries) - Requires `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`.",
     "tool_calls": [
@@ -486,7 +742,7 @@
      "output_tokens": 191
     },
     "cost_usd": 0.0,
-    "latency_ms": 10327.8,
+    "latency_ms": 8187.9,
     "turns": 2,
     "data": {
      "tool_names": [
@@ -527,7 +783,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "22568 ms",
+     "detail": "20676 ms",
      "kind": "budget"
     },
     {
@@ -553,10 +809,60 @@
      "input_tokens": 1551,
      "output_tokens": 69
     },
-    "latency_ms": 8743.5,
+    "latency_ms": 8798.5,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 20676.0,
+     "tokens": 3936,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 1620,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "market_snapshot"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 18323.0,
+     "tokens": 3886,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 1567,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "market_snapshot"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 18326.3,
+     "tokens": 3886,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 1567,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "market_snapshot"
+     ],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "Basado en un análisis reciente de las ofertas de empleo para **Ingeniero de Software en remoto**, estas son las tecnologías y habilidades más demandadas actualmente:\n\n### 1. Lenguajes de Programación Principales\n*   **Python:** Es el lenguaje líder, apareciendo en el **41%** de las ofertas.\n*   **TypeScript:** Muy fuerte en el desarrollo web moderno (**29%**).\n*   **Go y Rust:** Están ganando tracción significativa para sistemas de alto rendimiento (**17%** y **14%** respectivamente).\n*   **Java y C++:** Siguen siendo pilares fundamentales en infraestructuras corporativas (**16-17%**).\n\n### 2. Inteligencia Artificial (Tendencia en auge)\nHay un enfoque creciente en la integración de IA en el software:\n*   **AI Agents:** Aparecen en el **23%** de las vacantes.\n*   **LLMs (Modelos de Lenguaje Grande):** Demandados en el **18%** de las ofertas.\n*   **Machine Learning:** Sigue siendo una habilidad base para muchos roles de ingeniería (**16%**).\n\n### 3. Frontend y Backend\n*   **React:** Sigue siendo la biblioteca de frontend dominante (**26%**).\n*   **Node.js:** Es la opción preferida para el backend en entornos JavaScript (**18%**).\n*   **PostgreSQL:** Es la base de datos relacional más solicitada (**19%**).\n\n### 4. Infraestructura y DevOps\nLas empresas buscan ingenieros que entiendan cómo desplegar y escalar aplicaciones:\n*   **AWS:** La plataforma de nube más solicitada (**22%**).\n*   **Kubernetes:** Fundamental para la orquestación de contenedores (**19%**).\n*   **CI/CD:** Conocimientos en integración y despliegue continuo son esenciales (**17%**).\n*   **Linux y Azure:** También mantienen una presencia constante en los requisitos de infraestructura.\n\n### 5. Habilidades de Diseño\n*   **System Design:** No es solo una tecnología, sino una competencia clave solicitada en el **28%** de las vacantes, enfocada en la arquitectura de sistemas escalables.\n\n**Resumen de mercado:** El perfil ideal actual combina un dominio sólido de **Python o TypeScript**, conocimientos en **infraestructura en la nube (AWS/Kubernetes)** y, cada vez más, experiencia trabajando con **agentes de IA y LLMs**.",
     "tool_calls": [
@@ -575,7 +881,7 @@
      "output_tokens": 570
     },
     "cost_usd": 0.0,
-    "latency_ms": 22567.5,
+    "latency_ms": 20676.0,
     "turns": 2,
     "data": {
      "tool_names": [
@@ -615,7 +921,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "9412 ms",
+     "detail": "7545 ms",
      "kind": "budget"
     },
     {
@@ -641,10 +947,60 @@
      "input_tokens": 504,
      "output_tokens": 47
     },
-    "latency_ms": 4387.9,
+    "latency_ms": 4329.7,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 7544.8,
+     "tokens": 2883,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 551,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 4137.1,
+     "tokens": 2880,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 546,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs"
+     ],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 4137.2,
+     "tokens": 2880,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 546,
+     "tool_recall": 1.0,
+     "tool_precision": 1.0,
+     "tool_calls": [
+      "search_jobs"
+     ],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "I couldn't find any job postings for an \"underwater basket weaving quantum engineer.\" It's likely that this specific combination of skills is either extremely niche or a humorous request!\n\nIf you are looking for roles in either **Quantum Engineering** or **Basket Weaving** separately, please let me know and I can search for those individually.",
     "tool_calls": [
@@ -662,7 +1018,7 @@
      "output_tokens": 99
     },
     "cost_usd": 0.0,
-    "latency_ms": 9412.3,
+    "latency_ms": 7544.8,
     "turns": 2,
     "data": {
      "tool_names": [
@@ -690,7 +1046,7 @@
     {
      "name": "latency ≤ 120000 ms",
      "passed": true,
-     "detail": "4484 ms",
+     "detail": "4541 ms",
      "kind": "budget"
     },
     {
@@ -710,10 +1066,54 @@
      "input_tokens": 270,
      "output_tokens": 47
     },
-    "latency_ms": 1614.2,
+    "latency_ms": 1576.2,
     "error": null
    },
    "judge_control": false,
+   "attempts": [
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 4540.7,
+     "tokens": 1337,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 317,
+     "tool_recall": null,
+     "tool_precision": 1.0,
+     "tool_calls": [],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 1586.3,
+     "tokens": 1334,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 315,
+     "tool_recall": null,
+     "tool_precision": 1.0,
+     "tool_calls": [],
+     "failed_checks": [],
+     "error": null
+    },
+    {
+     "passed": true,
+     "task_success": true,
+     "latency_ms": 1626.6,
+     "tokens": 1334,
+     "cost_usd": 0.0,
+     "judge_score": 5.0,
+     "judge_tokens": 315,
+     "tool_recall": null,
+     "tool_precision": 1.0,
+     "tool_calls": [],
+     "failed_checks": [],
+     "error": null
+    }
+   ],
    "trace": {
     "output": "A remote job allows you to work from any location (typically from home), while a hybrid job requires you to split your time between working from home and working in a physical office.",
     "tool_calls": [],
@@ -722,7 +1122,7 @@
      "output_tokens": 37
     },
     "cost_usd": 0.0,
-    "latency_ms": 4484.3,
+    "latency_ms": 4540.7,
     "turns": 1,
     "data": {
      "tool_names": [],

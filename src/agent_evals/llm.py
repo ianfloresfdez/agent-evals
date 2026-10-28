@@ -56,13 +56,15 @@ class LLMClient:
 class OllamaClient(LLMClient):
     provider = "ollama"
 
-    def __init__(self, model: str, base_url: str | None = None, think: bool = False, num_ctx: int | None = None, **kw):
+    def __init__(self, model: str, base_url: str | None = None, think: bool = False, num_ctx: int | None = None,
+                 seed: int | None = 7, **kw):
         super().__init__(model, **kw)
         self.base_url = (base_url or os.environ.get("OLLAMA_HOST") or "http://localhost:11434").rstrip("/")
         if not self.base_url.startswith("http"):
             self.base_url = f"http://{self.base_url}"
         self.think = think
         self.num_ctx = num_ctx
+        self.seed = seed  # None lets Ollama sample freely
 
     def chat(self, messages, tools=None, json_schema=None, temperature=0.0):
         body: dict[str, Any] = {
@@ -70,7 +72,8 @@ class OllamaClient(LLMClient):
             "messages": messages,
             "stream": False,
             "think": self.think,
-            "options": {"temperature": temperature, "seed": 7, **({"num_ctx": self.num_ctx} if self.num_ctx else {})},
+            "options": {"temperature": temperature, **({"seed": self.seed} if self.seed is not None else {}),
+                        **({"num_ctx": self.num_ctx} if self.num_ctx else {})},
         }
         if tools:
             body["tools"] = tools
