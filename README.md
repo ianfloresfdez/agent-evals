@@ -9,6 +9,10 @@ It is applied to two real projects:
 
 Both targets run unchanged. The harness starts them, talks to them over their public interfaces (HTTP, MCP stdio) and never patches their code.
 
+**What it demonstrates:** treating agent quality like any other tested property. Golden sets are versioned data, every check is reproducible (recorded HTTP traffic, frozen clock, temperature 0), the LLM judge is itself tested with negative controls, and CI blocks a merge when a case that used to pass starts failing.
+
+**Try it in two minutes, no GPU and no API key:** `pip install -e ".[dev]" && pytest -q` (33 unit tests), then the deterministic MCP contract suite with `--no-judge` (see [Run it](#run-it)).
+
 ![agent-evals report: jobscout-agent suite](docs/report-jobscout-agent.png)
 
 ```
@@ -39,7 +43,7 @@ The judge added 13,654 tokens on the agent suite and 5,204 on the jack suite. A 
 
 The history in `results/` (not committed) holds four runs of the agent suite. The first two did not pass, and both failures taught something:
 
-1. **Run 1: 6/8, and the failures were in the harness.** The judge gave 2/5 to two answers and called postings from the tool output "invented". They were not: the judge only saw the first 1,500 characters of each tool result, and those postings came later in the text. Fix: the judge now sees exactly what the model saw (up to 6,000 characters per tool call), and Ollama gets a larger context window for the judge. A unit test covers it.
+1. **Run 1: 6/8, and the failures were in the harness.** The judge gave 2/5 to two answers and called postings from the tool output "invented". They were not: the judge only saw the first 1,500 characters of each tool result, and those postings came later in the text. Fix: the judge now sees what the model saw (the same 6,000 characters per tool call, within a 24,000-character evidence budget per answer), and Ollama gets a larger context window for the judge. A unit test covers it.
 2. **Run 2: 5/8, and the gate failed as designed.** Another workload was using the same GPU, so one case hit the 300 s HTTP timeout and two went over the 120 s latency budget. `--gate` reported `regressed: market-skills-and-pay` and exited 1.
 3. **Run 3: 8/8** on a free GPU. The gate passed and listed the three fixed cases.
 4. **Run 4: `--repeat 3`, 24/24 attempts passed, no flaky case.** p50 18.3 s, p95 33.2 s, 101,800 agent tokens (≈4,240 per attempt), judge 5/5 on every attempt. The whole run took 9.3 minutes.
@@ -109,7 +113,7 @@ Every run is saved to `results/<suite>/<run_id>.json`. `--gate` compares the run
 - a case that passed before fails now,
 - the pass rate drops,
 - the judge mean drops by more than 0.5,
-- p50 latency grows more than 50%, mean tokens more than 25%, or cost more than 25%.
+- p50 latency grows more than 50%, mean tokens more than 25%, or cost more than 25%. A metric that was 0 in the baseline (a mock run's tokens, a local model's cost) fails as soon as it is above 0.
 
 Each suite can tune these thresholds in its `regression:` block, and `--skip-metric` turns one off. CI skips latency, because GitHub's runners are not the machine the baseline was measured on.
 
@@ -153,12 +157,13 @@ A tool-calling model (default `ollama:gemma4:12b`, or any `provider:model` via `
 Requires Python 3.12+, Node 18.17+, and for the LLM parts [Ollama](https://ollama.com) with `gemma4:12b` pulled.
 
 ```bash
-python -m venv .venv && .venv/Scripts/activate      # source .venv/bin/activate on Linux/macOS
+python -m venv .venv
+source .venv/Scripts/activate    # Git Bash on Windows · PowerShell: .venv\Scripts\Activate.ps1 · Linux/macOS: source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 ```
 
-The suites expect jack and jobscout-mcp in sibling folders; otherwise set `JACK_PATH` / `JOBSCOUT_PATH`.
+Each suite's `target.path` says where it expects the project (relative to the YAML file); set `JACK_PATH` / `JOBSCOUT_PATH` to point elsewhere. jobscout-mcp has to be built (`npm ci && npm run build`), and jack needs `npm ci`.
 
 ```bash
 agent-evals run golden/jobscout/tools.v1.yaml --no-judge          # deterministic, seconds
@@ -171,7 +176,9 @@ agent-evals run golden/jobscout/agent.v1.yaml --repeat 3           # 3 attempts 
 agent-evals list                                                   # run history
 ```
 
-The first jobscout run records the cassette: `AGENT_EVALS_CASSETTE_MODE=auto agent-evals run golden/jobscout/tools.v1.yaml --no-judge`.
+Cassettes are not in the repo, so on a fresh clone the first jobscout run must record one (this hits the live job boards once): `AGENT_EVALS_CASSETTE_MODE=auto agent-evals run golden/jobscout/tools.v1.yaml --no-judge`. After that, `replay` runs offline and gives the same answer every time.
+
+Neither `--no-judge` suite needs a GPU or a key: `jobscout-tools` calls the MCP tools directly and `jack-pipeline` runs jack's agents in mock mode. Only the judge and the `jobscout-agent` suite need a model.
 
 ### Adding a target
 
