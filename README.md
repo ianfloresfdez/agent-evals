@@ -4,19 +4,19 @@
 
 It is applied to two real projects:
 
-- **[jack](https://github.com/ianfloresfdez/jack)**: a ticket → code → tests → risk → approval pipeline built on the Claude Agent SDK. Evaluated end to end through its HTTP API.
-- **[jobscout-mcp](https://github.com/ianfloresfdez/jobscout-mcp)**: a TypeScript MCP server that searches job boards. Evaluated twice: its tools as an MCP contract, and a local LLM agent that uses them.
+- **[jack](https://github.com/ianfloresfdez/jack)**: a ticket → code → tests → risk → approval pipeline built on the Claude Agent SDK. Evaluated end to end through its HTTP API, with mock agents and with local agents through [llm-gateway](https://github.com/ianfloresfdez/llm-gateway).
+- **[codegraph](https://github.com/ianfloresfdez/codegraph)**: code search over a tree-sitter graph and local embeddings. Its retrieval quality is measured on its own.
 
-Both targets run unchanged. The harness starts them, talks to them over their public interfaces (HTTP, MCP stdio) and never patches their code.
+Both targets run unchanged. The harness starts them or calls their HTTP API and never patches their code.
 
 **What it demonstrates:** treating agent quality like any other tested property. Golden sets are versioned data, every check is reproducible (recorded HTTP traffic, frozen clock, temperature 0), the LLM judge is itself tested with negative controls, and CI blocks a merge when a case that used to pass starts failing.
 
-**Try it in two minutes, no GPU and no API key:** `pip install -e ".[dev]" && pytest -q` (33 unit tests), then the deterministic MCP contract suite with `--no-judge` (see [Run it](#run-it)).
+**Try it in two minutes, no GPU and no API key:** `pip install -e ".[dev]" && pytest -q` , then jack's mock pipeline suite with `--no-judge` (see [Run it](#run-it)).
 
-![agent-evals report: jobscout-agent suite](docs/report-jobscout-agent.png)
+![agent-evals report: jack-pipeline suite](docs/report-jack-pipeline.png)
 
 ```
-golden/*.yaml ──▶ runner ──▶ target adapter ──▶ agent under test (jack API · MCP server · LLM + tools)
+golden/*.yaml ──▶ runner ──▶ target adapter ──▶ agent under test (jack API · codegraph API)
    (versioned,        │                                   │
     sha256 in         │◀──────────── trace ───────────────┘  output, tool calls, tokens, cost, latency, state
     every result)     ▼
@@ -29,33 +29,21 @@ golden/*.yaml ──▶ runner ──▶ target adapter ──▶ agent under te
 
 ## Results
 
-Measured on 28 October 2026 on a Windows 11 desktop (AMD RX 6800 16 GB, Ollama with ROCm). Agent and judge are both `gemma4:12b` running locally, so the cost is $0. jack was measured at commit `d942b59` (with uncommitted metrics work in its tree that does not touch the mock path); jobscout-mcp at `7255001`.
+Measured on a Windows 11 desktop (AMD RX 6800 16 GB, Ollama on Vulkan). Everything runs locally, so the cost is $0.
 
 | Suite | Target | Cases passed | Tool recall / precision | Judge mean (1-5) | Latency p50 / p95 | Agent tokens (total) |
 |---|---|---|---|---|---|---|
-| `jobscout-tools` v1 | MCP tools, no LLM, replayed traffic | 8/8 | n/a | n/a | 0.6 s / 0.8 s | 0 |
 | `jack-pipeline` v1 | jack API, mock agents | 8/8 | 100% / 100% | 5.00 (negative control: 1) | 9.9 s / 12.2 s | 0 (mock) |
-| `jobscout-agent` v1 | gemma4:12b + jobscout MCP | 8/8 | 100% / 100% | 5.00 | 24.1 s / 34.5 s | 33,974 (≈4,250 per case) |
+| `jack-pipeline-live-local` v1 | jack API, gpt-oss-64k via llm-gateway | 2/2 | n/a | off | 464 s / 482 s | not reported by the gateway |
+| `codegraph-search` v1 | codegraph HTTP API, nomic-embed-text | 9/12 (recall@5) | n/a | n/a | under 1 s | 0 |
 
-The judge added 13,654 tokens on the agent suite and 5,204 on the jack suite. A full jobscout-agent run takes about 4 minutes, and the jack suite about 2 minutes.
-
-### What the runs caught
-
-The history in `results/` (not committed) holds four runs of the agent suite. The first two did not pass, and both failures taught something:
-
-1. **Run 1: 6/8, and the failures were in the harness.** The judge gave 2/5 to two answers and called postings from the tool output "invented". They were not: the judge only saw the first 1,500 characters of each tool result, and those postings came later in the text. Fix: the judge now sees what the model saw (the same 6,000 characters per tool call, within a 24,000-character evidence budget per answer), and Ollama gets a larger context window for the judge. A unit test covers it.
-2. **Run 2: 5/8, and the gate failed as designed.** Another workload was using the same GPU, so one case hit the 300 s HTTP timeout and two went over the 120 s latency budget. `--gate` reported `regressed: market-skills-and-pay` and exited 1.
-3. **Run 3: 8/8** on a free GPU. The gate passed and listed the three fixed cases.
-4. **Run 4: `--repeat 3`, 24/24 attempts passed, no flaky case.** p50 18.3 s, p95 33.2 s, 101,800 agent tokens (≈4,240 per attempt), judge 5/5 on every attempt. The whole run took 9.3 minutes.
-
-![one case expanded: checks, tool calls, judge reasoning and answer](docs/report-jobscout-agent-case.png)
+The jack mock suite's judge (`gemma4:12b`) added 5,204 tokens; the run takes about 2 minutes.
 
 ### Limits worth knowing
 
-- **The judge is the same model as the agent.** A local 12B model grading itself is free and fast, but it is lenient: every non-control answer got 5/5. The negative control shows it can say "wrong" (it gave 1/5 to a spec about money formatting for a dark-mode ticket). But in the jack suite it also gave 5/5 to an intake that added a criterion the ticket never asked for ("negative values keep their sign"). For real decisions, run the judge on a stronger model (`--judge openai:…` or `--judge anthropic:…`) and compare.
-- **jack is measured in mock mode.** That validates the orchestration, guardrails and approval policy, not the quality of the Claude agents. The adapter supports `agent_mode: live`; a live run costs tokens and is not included here.
-- **Eight cases per suite is a smoke test, not a benchmark.** Expect more cases in the next version of the golden sets.
-- **No flakiness at temperature 0 says little about robustness.** The agent runs at temperature 0 with a fixed seed. Across the three repeats every case made the same tool calls, and tokens varied by under 2%, only on the first attempt. Repeats here mostly catch infrastructure noise (GPU contention, timeouts). To measure how the agent behaves when sampling, set `temperature: 0.7` and `seed: null` in the target config and repeat.
+- **The default judge is a local 12B model.** It is free and fast, but lenient: every non-control answer got 5/5. The negative control shows it can say "wrong" (it gave 1/5 to a spec about money formatting for a dark-mode ticket). But in the jack suite it also gave 5/5 to an intake that added a criterion the ticket never asked for ("negative values keep their sign"). For real decisions, run the judge on a stronger model (`--judge openai:…` or `--judge anthropic:…`) and compare.
+- **The mock suite does not measure the agents.** It validates jack's orchestration, guardrails and approval policy. The live-local suite runs real agents, but only two small tickets, because each takes minutes on a consumer GPU.
+- **A handful of cases per suite is a smoke test, not a benchmark.** Expect more cases in the next version of the golden sets.
 
 ## How it works
 
@@ -64,16 +52,17 @@ The history in `results/` (not committed) holds four runs of the agent suite. Th
 A suite is a YAML (or JSON) file under `golden/`. It names its target, default budgets, regression rules, a rubric for the judge, and the cases. The loader stores the file's SHA-256 in every result, so a run always says exactly which version of the golden set produced it, and the report flags when the set changed since the baseline.
 
 ```yaml
-- id: search-then-open-first
-  input: Find recent Python jobs and open the first one with its full description.
+- id: sensitive-paths-escalate
+  input:
+    fixture: node-green
+    project: { autoApproveUpTo: low, sensitivePaths: ["utils/", "money"] }
+    ticket:
+      title: Add a formatMoney helper
+      description: Add formatMoney(amount, currency, locale) that formats with 2 decimals and the currency symbol.
   expect:
-    tools:
-      required:
-        - { name: search_jobs, args: { query: { contains: python } } }
-        - { name: get_job, args: { id: { regex: "^[a-z]+:.+" } } }
-      ordered: true
-      max_calls: 4
-    judge: { min_score: 3 }
+    fields:
+      status: waiting_approval
+      risk.factors: { contains: sensitive }
 ```
 
 Expectations use small matchers (`equals`, `contains`, `contains_all`, `regex`, `not_regex`, `gte`, `lte`, `exists`…) on four things:
@@ -116,12 +105,6 @@ Every run is saved to `results/<suite>/<run_id>.json`. `--gate` compares the run
 - p50 latency grows more than 50%, mean tokens more than 25%, or cost more than 25%. A metric that was 0 in the baseline (a mock run's tokens, a local model's cost) fails as soon as it is above 0.
 
 Each suite can tune these thresholds in its `regression:` block, and `--skip-metric` turns one off. CI skips latency, because GitHub's runners are not the machine the baseline was measured on.
-
-### Reproducible tool traffic
-
-jobscout queries live job boards, so the same search returns different postings every day. The harness preloads a small Node module (`node --import fetch-replay.mjs`) into the unchanged MCP server. It records every HTTP response into a gzipped cassette on the first run, replays it afterwards, and freezes `Date.now()` at recording time so "posted in the last 7 days" filters give the same answer on every replay. Modes: `replay` (a miss is an error), `auto` (replay, record misses), `record`.
-
-Cassettes are not committed: they hold third-party listings, some with contact details. CI records a fresh one. Email addresses are redacted from stored results.
 
 ## Targets
 
@@ -170,17 +153,9 @@ First run (jack at `feat/llm-gateway-provider`, `nomic-embed-text`): **recall@5 
 questions drift to `types.ts`, which mentions everything. That is the case for a multilingual
 embedding model, and this suite is how to tell whether switching helps.
 
-### jobscout tools (`golden/jobscout/tools.v1.yaml`)
-
-Contract tests for the MCP server, with no LLM: discovery, search output format, `get_job` resolving an id from a search in the same session, error results for unknown ids, schema validation rejecting an empty query, market snapshot, ranking, and unknown skills being reported. Fully deterministic with a cassette. This is the suite that gates CI.
-
-### jobscout agent (`golden/jobscout/agent.v1.yaml`)
-
-A tool-calling model (default `ollama:gemma4:12b`, or any `provider:model` via `AGENT_EVALS_AGENT_MODEL`) gets the server's tools, converted from their MCP JSON Schemas, and a user request. Cases cover picking the right tool, filling arguments (`max_age_days ≤ 7`, `remote_only`, the user's full skill list), a two-step search → open flow, answering in Spanish, saying "nothing found" without inventing postings, and not calling tools when none are needed.
-
 ## Run it
 
-Requires Python 3.12+, Node 18.17+, and for the LLM parts [Ollama](https://ollama.com) with `gemma4:12b` pulled.
+Requires Python 3.12+, Node 18.17+ for jack, and for the LLM parts [Ollama](https://ollama.com) with `gemma4:12b` pulled.
 
 ```bash
 python -m venv .venv
@@ -189,22 +164,22 @@ pip install -e ".[dev]"
 pytest -q
 ```
 
-Each suite's `target.path` says where it expects the project (relative to the YAML file); set `JACK_PATH` / `JOBSCOUT_PATH` to point elsewhere. jobscout-mcp has to be built (`npm ci && npm run build`), and jack needs `npm ci`.
+Each suite's `target.path` says where it expects the project (relative to the YAML file); set `JACK_PATH` to point elsewhere. jack needs `npm ci`; the codegraph suite needs codegraph's UI server running (`python ui.py`).
 
 ```bash
-agent-evals run golden/jobscout/tools.v1.yaml --no-judge          # deterministic, seconds
-agent-evals run golden/jack/pipeline.v1.yaml                      # mock agents + local judge
-agent-evals run golden/jobscout/agent.v1.yaml                     # local LLM agent + judge
-agent-evals run golden/jobscout/agent.v1.yaml --judge openai:gpt-4.1-mini   # another judge
-agent-evals run golden/jack/pipeline.v1.yaml --gate               # exit 1 if worse than the last run
-agent-evals report                                                 # report/index.html
-agent-evals run golden/jobscout/agent.v1.yaml --repeat 3           # 3 attempts per case, flaky cases reported
-agent-evals list                                                   # run history
+agent-evals run golden/jack/pipeline.v1.yaml --no-judge          # mock agents, deterministic, ~2 min
+agent-evals run golden/jack/pipeline.v1.yaml                     # mock agents + local judge
+agent-evals run golden/jack/pipeline.v1.yaml --judge openai:gpt-4.1-mini   # another judge
+agent-evals run golden/jack/pipeline.v1.yaml --gate              # exit 1 if worse than the last run
+agent-evals run golden/codegraph/search.v1.yaml --no-judge       # retrieval quality, seconds
+agent-evals run golden/jack/pipeline-live-local.v1.yaml --no-judge   # local agents, ~15 min
+agent-evals run golden/jack/pipeline.v1.yaml --repeat 3          # 3 attempts per case, flaky cases reported
+agent-evals list                                                  # run history
 ```
 
-Cassettes are not in the repo, so on a fresh clone the first jobscout run must record one (this hits the live job boards once): `AGENT_EVALS_CASSETTE_MODE=auto agent-evals run golden/jobscout/tools.v1.yaml --no-judge`. After that, `replay` runs offline and gives the same answer every time.
+Every run is saved under `results/` and rebuilds `report/index.html` (all suites, with their history); `--no-report` skips that and `agent-evals report` rebuilds it by hand. Neither folder is committed, so a fresh clone starts with an empty report.
 
-Neither `--no-judge` suite needs a GPU or a key: `jobscout-tools` calls the MCP tools directly and `jack-pipeline` runs jack's agents in mock mode. Only the judge and the `jobscout-agent` suite need a model.
+Only the judge and the live-local suite need a model; the mock jack suite and the codegraph suite need no GPU and no key.
 
 ### Adding a target
 
@@ -217,9 +192,7 @@ Subclass `Target` (`src/agent_evals/targets/base.py`), implement `run(case) -> T
 | Job | Runs | When |
 |---|---|---|
 | `unit` | `pytest` | every push and PR |
-| `jobscout-tools` | builds jobscout-mcp, runs the contract suite, gates against `baselines/jobscout-tools.json`, uploads the HTML report | every push and PR |
 | `jack-pipeline` | installs jack, runs the mock pipeline suite, gates against `baselines/jack-pipeline.json` | when `RUN_JACK_EVALS=true` and `JACK_REPO_TOKEN` can read the repo |
-| `jobscout-agent` | the LLM suite on a self-hosted runner with Ollama | manual dispatch |
 
 ## Layout
 
@@ -233,8 +206,7 @@ src/agent_evals/
   runner.py       runs a suite, stores results
   regression.py   baseline comparison and gate
   report.py       static HTML report (templates/report.html.j2)
-  targets/        jack.py, jobscout.py
-  node/fetch-replay.mjs
+  targets/        jack.py, codegraph.py
 golden/           versioned golden sets and jack fixture repos
 baselines/        reference runs used by the CI gate
 tests/            unit tests

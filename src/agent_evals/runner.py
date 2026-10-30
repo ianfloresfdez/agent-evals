@@ -112,7 +112,7 @@ EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 
 
 def save_run(run: RunResult, results_dir: Path) -> Path:
-    """Stores the run. Email addresses in agent outputs (job posts often include one) are redacted first."""
+    """Stores the run. Email addresses in agent outputs are redacted first."""
     out = results_dir / run.suite / f"{run.run_id}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(EMAIL.sub("[email]", run.model_dump_json(indent=1)), encoding="utf-8")

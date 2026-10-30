@@ -61,7 +61,8 @@ def run(
     skip_metric: Annotated[Optional[list[str]], typer.Option("--skip-metric", help="Metric the gate ignores, e.g. latency_p50_ms.")] = None,
     repeat: Annotated[int, typer.Option(help="Run every case N times; a case passes only if all N pass.")] = 1,
     save: Annotated[bool, typer.Option(help="Store the run under --results.")] = True,
-    report: Annotated[Optional[Path], typer.Option(help="Also write the HTML report here.")] = None,
+    report: Annotated[Optional[Path], typer.Option(help="Rebuild the HTML report here after the run (--no-report to skip).")] = Path("report/index.html"),
+    no_report: Annotated[bool, typer.Option("--no-report", help="Do not rebuild the HTML report.")] = False,
 ):
     """Run a golden set against its target and score every case."""
     suite = select_cases(load_suite(suite_path), case, tag)
@@ -81,7 +82,7 @@ def run(
         typer.echo(f"{s.repeats} attempts per case · {s.attempt_pass_rate:.0%} of attempts passed · flaky: {', '.join(s.flaky_cases) or 'none'}")
     if save:
         typer.echo(f"saved {save_run(result, results)}")
-    if report:
+    if report and save and not no_report:
         typer.echo(f"report {build_report(results, report)}")
 
     base = baseline or (previous[-1] if previous else None)
