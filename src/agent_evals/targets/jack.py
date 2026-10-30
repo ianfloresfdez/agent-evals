@@ -36,6 +36,14 @@ def _free_port() -> int:
         return s.getsockname()[1]
 
 
+def _inside(root: Path, rel: str) -> Path:
+    """root/rel, refusing paths from the golden set that would escape root ("../", absolute paths)."""
+    path = (root / rel).resolve()
+    if not path.is_relative_to(root.resolve()):
+        raise ValueError(f"{rel!r} points outside {root}")
+    return path
+
+
 def _git(cwd: Path, *args: str) -> None:
     subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True, env={**os.environ, **GIT_ENV})
 
@@ -98,15 +106,16 @@ class JackPipelineTarget(Target):
     # ── one case ──────────────────────────────────────────────────────────────
 
     def _make_repo(self, case: Case) -> Path:
-        src = self.fixtures / case.input["fixture"]
-        dest = self.tmp / "repos" / case.id
+        src = _inside(self.fixtures, case.input["fixture"])
+        dest = _inside(self.tmp / "repos", case.id)
         shutil.copytree(src, dest)
         _git(dest, "init", "-q", "-b", "main")
         _git(dest, "add", "-A")
         _git(dest, "commit", "-q", "-m", "fixture")
         for rel, content in (case.input.get("uncommitted") or {}).items():
-            (dest / rel).parent.mkdir(parents=True, exist_ok=True)
-            (dest / rel).write_text(content, encoding="utf-8")
+            path = _inside(dest, rel)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
         return dest
 
     def run(self, case: Case) -> Trace:

@@ -32,6 +32,8 @@ REPLAY = Path(__file__).resolve().parent.parent / "node" / "fetch-replay.mjs"
 ID_RE = re.compile(r"\[([a-z]+:[^\]\s]+)\]")
 # Keys that would leak into cassettes or enable paid sources: never forwarded to the server.
 SCRUBBED_ENV = ("ADZUNA_APP_ID", "ADZUNA_APP_KEY", "JOBSCOUT_COMPANIES")
+# The harness's own LLM keys (agent and judge) are not the server's business either.
+SCRUBBED_SUFFIXES = ("_API_KEY", "_TOKEN", "_SECRET")
 
 
 def _is_error(result: Any) -> bool:
@@ -60,7 +62,7 @@ class _JobscoutBase(Target):
         self.cassette_mode = os.environ.get("AGENT_EVALS_CASSETTE_MODE") or self.config.get("cassette_mode", "replay")
 
     def server_params(self) -> StdioServerParameters:
-        env = {k: v for k, v in os.environ.items() if k not in SCRUBBED_ENV}
+        env = {k: v for k, v in os.environ.items() if k not in SCRUBBED_ENV and not k.upper().endswith(SCRUBBED_SUFFIXES)}
         args = [str(self.entry)]
         if self.cassette:
             env["AGENT_EVALS_CASSETTE"] = str(self.cassette)

@@ -31,3 +31,26 @@ def test_select_by_id_and_tag(tmp_path):
     assert [c.id for c in select_cases(s, ids=["b"]).cases] == ["b"]
     with pytest.raises(ValueError):
         select_cases(s, ids=["zzz"])
+
+
+def test_jack_fixture_paths_cannot_escape(tmp_path):
+    from agent_evals.targets.jack import _inside
+
+    assert _inside(tmp_path, "src/a.ts") == (tmp_path / "src" / "a.ts").resolve()
+    for bad in ("../outside.txt", "src/../../x", str(tmp_path.parent / "abs.txt")):
+        with pytest.raises(ValueError, match="outside"):
+            _inside(tmp_path, bad)
+
+
+def test_llm_keys_not_forwarded_to_mcp_server(tmp_path, monkeypatch):
+    from agent_evals.targets.jobscout import JobscoutToolsTarget
+
+    (tmp_path / "dist").mkdir()
+    (tmp_path / "dist" / "index.js").write_text("")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "x")
+    monkeypatch.setenv("ADZUNA_APP_KEY", "x")
+    monkeypatch.setenv("JOBSCOUT_PATH", str(tmp_path))
+    t = JobscoutToolsTarget({"type": "jobscout-tools"}, tmp_path)
+    t.setup()
+    env = t.server_params().env
+    assert "ANTHROPIC_API_KEY" not in env and "ADZUNA_APP_KEY" not in env and "PATH" in {k.upper() for k in env}
