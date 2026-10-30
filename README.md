@@ -140,6 +140,17 @@ to the analysis stage (`AGENT_EVALS_JACK_CODEGRAPH_URL=http://127.0.0.1:8790` fo
 and change the gateway's `AGENT_LOCAL_MODEL` to compare local models. Free, but slow: minutes per
 stage on a consumer GPU, so run it without the judge (it would swap models on the GPU every case).
 
+First comparison (gpt-oss-64k, one attempt per case):
+
+| Run | format-money | clamp-helper | p50 |
+|---|---|---|---|
+| without codegraph | pass, 444 s, risk low (21) | pass, 484 s, risk medium (30) | 464 s |
+| with codegraph context | pass, 485 s, risk low (9) | **fail**, 372 s: the agent's tests mixed two test frameworks and the suite failed, risk high (71) | 428 s |
+
+One attempt per case cannot separate codegraph's effect from the model's run-to-run variance: the
+failure is in the tests the agent wrote, not in finding the code. Use `--repeat 3` on both
+settings before drawing a conclusion.
+
 ### codegraph search (`golden/codegraph/search.v1.yaml`)
 
 Retrieval quality of codegraph's code search, which is all an agent sees of a repo before it reads
