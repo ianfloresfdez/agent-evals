@@ -89,3 +89,22 @@ def test_repeats_merge_and_flaky_summary():
     s = summarize([merged])
     assert (s.repeats, s.attempt_pass_rate, s.flaky_cases, s.tokens_mean) == (3, 0.6667, ["c"], 16.7)
     assert s.latency_p50_ms == 100 and merge_attempts([ok]) is ok
+
+
+def test_target_exception_fails_only_that_case(monkeypatch):
+    import agent_evals.runner as runner
+    from agent_evals.targets.base import Target
+
+    class Flaky(Target):
+        def run(self, case):
+            if case.id == "boom":
+                raise KeyError("id")
+            return Trace(output="ok")
+
+    monkeypatch.setattr(runner, "make_target", lambda config, base: Flaky(config, base))
+    suite = Suite.model_validate({"suite": "s", "version": 1, "target": {"type": "fake"},
+                                  "cases": [{"id": "boom", "input": "q"}, {"id": "fine", "input": "q"}]})
+    suite.path = "golden/s.yaml"
+    run = runner.run_suite(suite)
+    assert [c.passed for c in run.cases] == [False, True]
+    assert "KeyError" in run.cases[0].trace.error and run.summary.errors == 1

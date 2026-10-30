@@ -33,7 +33,8 @@ def build_report(results_dir: Path, out: Path, history: int = 20) -> Path:
     env = Environment(loader=PackageLoader("agent_evals", "templates"), autoescape=select_autoescape(["html"]))
     env.filters.update(ms=_fmt_ms, pct=_pct)
     suites = []
-    for suite_dir in sorted(p for p in results_dir.iterdir() if p.is_dir()):
+    dirs = sorted(p for p in results_dir.iterdir() if p.is_dir()) if results_dir.is_dir() else []
+    for suite_dir in dirs:
         paths = list_runs(results_dir, suite_dir.name)[-history:]
         if not paths:
             continue

@@ -32,7 +32,10 @@ class Comparison:
 
 
 def _pct(base: float, cur: float) -> float:
-    return 0.0 if base == 0 else (cur - base) / base * 100
+    # From zero to anything (a $0 baseline that starts costing money) is an unbounded increase, not 0%.
+    if base == 0:
+        return 0.0 if cur <= 0 else float("inf")
+    return (cur - base) / base * 100
 
 
 def compare(base: RunResult, cur: RunResult, rules: RegressionRules, skip: set[str] | None = None) -> Comparison:

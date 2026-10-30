@@ -106,7 +106,11 @@ def compare_cmd(
     from .schema import RegressionRules
 
     base = load_run(baseline)
-    cur_path = current or list_runs(results, base.suite)[-1]
+    runs = list_runs(results, base.suite)
+    if current is None and not runs:
+        typer.echo(f"No stored runs of {base.suite} under {results}; pass the current run explicitly.", err=True)
+        raise typer.Exit(2)
+    cur_path = current or runs[-1]
     rules = load_suite(suite_path).regression if suite_path else RegressionRules()
     if not _gate(baseline, load_run(cur_path), rules, skip_metric or []):
         raise typer.Exit(1)
