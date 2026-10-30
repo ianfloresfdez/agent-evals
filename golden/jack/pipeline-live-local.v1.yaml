@@ -1,0 +1,66 @@
+suite: jack-pipeline-live-local
+version: 1
+description: >
+  jack with real agents on a local model: the Claude Agent SDK talks to llm-gateway, which answers
+  with Ollama (gpt-oss-64k by default). Small tickets on the fixture repos, QA off. Measures what a
+  local model can deliver end to end: does the run reach the approval gate with green tests, how long
+  does it take, how many tool calls. Free but slow (minutes per stage on a consumer GPU).
+
+  Compare with and without codegraph's context in the analysis stage:
+    agent-evals run golden/jack/pipeline-live-local.v1.yaml
+    AGENT_EVALS_JACK_CODEGRAPH_URL=http://127.0.0.1:8790 agent-evals run golden/jack/pipeline-live-local.v1.yaml
+  To compare local models, change the gateway's AGENT_LOCAL_MODEL and run again; the result records
+  which model answered.
+target:
+  type: jack-pipeline
+  path: ../../../../jack        # or JACK_PATH
+  fixtures: fixtures
+  agent_mode: live
+  timeout_s: 3600
+  env:
+    JACK_LLM_PROVIDER: llm-gateway
+    LLM_GATEWAY_URL: http://127.0.0.1:8080
+budgets:
+  latency_ms: 3600000
+regression:
+  max_pass_rate_drop: 0.0
+  max_latency_p50_increase_pct: 50
+rubric: |
+  The text is what jack's pipeline produced for the ticket shown as USER INPUT, with a local model.
+  - The acceptance criteria must restate the ticket's actual requirement as concrete, testable statements.
+  - The plan must implement that same requirement, not something else.
+  Score 1-2 if the criteria or plan are about a different feature than the ticket asks for.
+
+cases:
+  - id: format-money
+    tags: [local, helper]
+    description: The smallest realistic ticket - a pure helper plus its tests on a green Node repo.
+    input:
+      fixture: node-green
+      project: { autoApproveUpTo: medium }
+      ticket:
+        title: Add a formatMoney helper
+        description: Add formatMoney(amount, currency, locale) that formats with 2 decimals, the currency symbol, and keeps the sign of negative values.
+    expect:
+      fields:
+        tests_passed: true
+        stages.implement: done
+        stages.verify: done
+        status: { any_of: [completed, waiting_approval] }
+      judge: { min_score: 3 }
+
+  - id: clamp-helper
+    tags: [local, helper]
+    input:
+      fixture: node-green
+      project: { autoApproveUpTo: medium }
+      ticket:
+        title: Add a clamp helper
+        description: Add clamp(value, min, max) that limits a number to the range [min, max] and throws a RangeError when min > max. Cover it with tests.
+    expect:
+      fields:
+        tests_passed: true
+        stages.implement: done
+        stages.verify: done
+        status: { any_of: [completed, waiting_approval] }
+      judge: { min_score: 3 }

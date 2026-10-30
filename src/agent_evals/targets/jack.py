@@ -6,7 +6,12 @@ policy, starts a run from a manual ticket and waits for a terminal state.
 
 By default jack runs with JACK_AGENT_MODE=mock: the agents are simulated, but git, the test suite,
 the risk scorer and the approval policy are real. That makes this suite a free, deterministic check of the
-orchestration. Live mode works too (`agent_mode: live`), but costs tokens.
+orchestration. Live mode works too (`agent_mode: live`), but costs tokens, unless the agents go through
+llm-gateway to a local model (`env: {JACK_LLM_PROVIDER: llm-gateway}`).
+
+`env` in the target config is passed to jack explicitly, so a live suite says which provider and which code
+map it uses instead of inheriting them from jack's .env. AGENT_EVALS_JACK_CODEGRAPH_URL overrides
+JACK_CODEGRAPH_URL for one run, to compare the same suite with and without codegraph's context.
 """
 
 from __future__ import annotations
@@ -64,7 +69,13 @@ class JackPipelineTarget(Target):
         env = {k: v for k, v in os.environ.items() if not k.startswith("JACK_")}
         # Explicit env wins over jack's .env (dotenv never overrides), so a live .env cannot leak in.
         env.update({"JACK_AGENT_MODE": self.mode, "JACK_PORT": str(port), "JACK_HOST": "127.0.0.1",
-                    "JACK_DATA_DIR": str(self.tmp / "data"), "JIRA_BASE_URL": "", **GIT_ENV})
+                    "JACK_DATA_DIR": str(self.tmp / "data"), "JIRA_BASE_URL": "",
+                    # off unless the suite asks for it: a local .env must not change what is measured
+                    "JACK_CODEGRAPH_URL": "", **GIT_ENV})
+        env.update({k: str(v) for k, v in (self.config.get("env") or {}).items()})
+        if "AGENT_EVALS_JACK_CODEGRAPH_URL" in os.environ:
+            env["JACK_CODEGRAPH_URL"] = os.environ["AGENT_EVALS_JACK_CODEGRAPH_URL"]
+        self.codegraph = env["JACK_CODEGRAPH_URL"] or None
         self.log = open(self.tmp / "jack.log", "w", encoding="utf-8")
         self.proc = subprocess.Popen(["node", "--import", "tsx", "src/index.ts"], cwd=self.repo / "apps" / "api",
                                      env=env, stdout=self.log, stderr=subprocess.STDOUT, shell=False)
@@ -96,8 +107,14 @@ class JackPipelineTarget(Target):
 
     def describe(self) -> dict[str, Any]:
         dirty = subprocess.run(["git", "-C", str(self.repo), "status", "--porcelain"], capture_output=True, text=True).stdout.strip()
+        llm = self.health.get("llm") or {}
+        answered = (llm.get("gateway") or {}).get("answeredBy")
+        model = None
+        if self.mode == "live":  # the model that really answers: through llm-gateway, the local target
+            model = f"llm-gateway:{answered}" if answered else f"jack:{self.health.get('model')}"
         return {"type": self.type, "repo": self.repo.name, "repo_sha": git_sha(self.repo), "repo_dirty": bool(dirty),
-                "agent_mode": self.health.get("agentMode"), "model": f"jack:{self.health.get('model')}" if self.mode == "live" else None}
+                "agent_mode": self.health.get("agentMode"), "llm_provider": llm.get("provider"), "model": model,
+                "codegraph": getattr(self, "codegraph", None)}
 
     def judge_input(self, case: Case) -> str:
         t = case.input["ticket"]

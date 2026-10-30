@@ -9,10 +9,11 @@ from .base import Target
 
 
 def make_target(config: dict[str, Any], base_dir: Path) -> Target:
+    from .codegraph import CodegraphSearchTarget
     from .jack import JackPipelineTarget
     from .jobscout import JobscoutAgentTarget, JobscoutToolsTarget
 
-    registry = {t.type: t for t in (JackPipelineTarget, JobscoutAgentTarget, JobscoutToolsTarget)}
+    registry = {t.type: t for t in (CodegraphSearchTarget, JackPipelineTarget, JobscoutAgentTarget, JobscoutToolsTarget)}
     kind = config.get("type")
     if kind not in registry:
         raise ValueError(f'Unknown target type "{kind}". Available: {", ".join(sorted(registry))}')

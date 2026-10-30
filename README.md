@@ -134,7 +134,7 @@ Each case copies a fixture repo (`golden/jack/fixtures/`), commits it, registers
 | Case | Setup | Expected |
 |---|---|---|
 | happy-path-auto-approve | green suite, threshold `low` | risk low (5) → auto-approved → shipped; the implement stage wrote `money.ts` |
-| failing-suite-blocks | a pre-existing failing test | `tests-failed` +45 → score 50 → **blocked**, nothing shipped |
+| failing-suite-blocks | a failing test, baseline capture off | `tests-failed` +45 → score 50 → **blocked**, nothing shipped |
 | no-test-suite-needs-review | no runnable tests | `no-tests` +20 → medium → human review |
 | strict-policy-human-review | threshold `none` | low risk, still waits for a human |
 | sensitive-paths-escalate | project patterns `utils/`, `money` | +20 → medium → human review |
@@ -143,6 +143,32 @@ Each case copies a fixture repo (`golden/jack/fixtures/`), commits it, registers
 | judge-negative-control | ticket about dark mode | the pipeline completes, but the judge must score ≤ 2 because the mock spec is about money formatting |
 
 Tool calls are read from jack's run log. jack's own commands (test runs, app boot, git delivery) are filtered out so only agent calls count.
+
+### jack with local agents (`golden/jack/pipeline-live-local.v1.yaml`)
+
+The same adapter in `live` mode, with the agents going through
+[llm-gateway](https://github.com/ianfloresfdez/llm-gateway) to a local Ollama model (gpt-oss-64k by
+default): the target passes `JACK_LLM_PROVIDER=llm-gateway` explicitly, so jack's own `.env` does not
+decide what is measured. Two small tickets on the green fixture, QA off; a case passes when the run
+reaches the approval gate (or ships) with green tests. The run records which local model answered.
+
+Run it twice to measure what [codegraph](https://github.com/ianfloresfdez/codegraph)'s context adds
+to the analysis stage (`AGENT_EVALS_JACK_CODEGRAPH_URL=http://127.0.0.1:8790` for the second run),
+and change the gateway's `AGENT_LOCAL_MODEL` to compare local models. Free, but slow: minutes per
+stage on a consumer GPU, so run it without the judge (it would swap models on the GPU every case).
+
+### codegraph search (`golden/codegraph/search.v1.yaml`)
+
+Retrieval quality of codegraph's code search, which is all an agent sees of a repo before it reads
+files. Twelve questions about jack's codebase (nine in English, three in Spanish), each with the file
+that answers it; a case passes when that file is in the top 5 (recall@5), and the trace keeps the rank,
+hit@1 and reciprocal rank. The target reindexes the repo through codegraph's HTTP API, then only
+searches: no LLM generation, deterministic for a commit and an embedding model.
+
+First run (jack at `feat/llm-gateway-provider`, `nomic-embed-text`): **recall@5 9/12 (75%)**, hit@1
+7/12, MRR 0.65. English 8/9, Spanish 1/3: the embedding model is English-first, and Spanish
+questions drift to `types.ts`, which mentions everything. That is the case for a multilingual
+embedding model, and this suite is how to tell whether switching helps.
 
 ### jobscout tools (`golden/jobscout/tools.v1.yaml`)
 
