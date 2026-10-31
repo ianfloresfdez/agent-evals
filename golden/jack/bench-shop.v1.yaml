@@ -17,7 +17,7 @@ target:
   path: ../../../../jack        # or JACK_PATH
   fixtures: fixtures
   agent_mode: live
-  timeout_s: 3600
+  timeout_s: 1800              # a ticket that needs more than 30 min on a local GPU counts as failed
   env:
     JACK_LLM_PROVIDER: llm-gateway
     LLM_GATEWAY_URL: http://127.0.0.1:8080
