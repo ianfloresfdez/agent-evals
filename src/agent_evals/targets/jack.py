@@ -49,6 +49,19 @@ def _inside(root: Path, rel: str) -> Path:
     return path
 
 
+def remove_tree(path: Path) -> None:
+    """rmtree that also removes git's read-only object files on Windows (ignore_errors left them behind)."""
+    def unlock(fn, p, _exc):
+        os.chmod(p, 0o700)
+        fn(p)
+
+    if path.exists():
+        try:
+            shutil.rmtree(path, onexc=unlock)
+        except OSError:
+            shutil.rmtree(path, ignore_errors=True)  # a file still held open: leave the rest, never fail the run
+
+
 def _git(cwd: Path, *args: str) -> None:
     subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True, env={**os.environ, **GIT_ENV})
 
@@ -103,7 +116,7 @@ class JackPipelineTarget(Target):
             self.proc.wait(timeout=15)
         if getattr(self, "log", None):
             self.log.close()
-        shutil.rmtree(self.tmp, ignore_errors=True)
+        remove_tree(self.tmp)
 
     def describe(self) -> dict[str, Any]:
         dirty = subprocess.run(["git", "-C", str(self.repo), "status", "--porcelain"], capture_output=True, text=True).stdout.strip()

@@ -41,3 +41,18 @@ def test_jack_fixture_paths_cannot_escape(tmp_path):
         with pytest.raises(ValueError, match="outside"):
             _inside(tmp_path, bad)
 
+
+
+def test_temp_repos_are_removed_even_with_read_only_git_objects(tmp_path):
+    import os
+    import stat
+
+    from agent_evals.targets.jack import remove_tree
+
+    obj = tmp_path / "repo" / ".git" / "objects" / "ab"
+    obj.mkdir(parents=True)
+    f = obj / "cdef"
+    f.write_text("x")
+    os.chmod(f, stat.S_IREAD)
+    remove_tree(tmp_path / "repo")
+    assert not (tmp_path / "repo").exists()
