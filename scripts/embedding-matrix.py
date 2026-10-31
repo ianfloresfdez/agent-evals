@@ -91,7 +91,7 @@ def main(models: list[str]) -> None:
     if not models:
         sys.exit(__doc__)
     rows = []
-    with tempfile.TemporaryDirectory(prefix="embedding-matrix-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="embedding-matrix-", ignore_cleanup_errors=True) as tmp:
         for m in models:
             print(f"\n=== {m}", flush=True)
             rows.append(run_model(m, Path(tmp)))
