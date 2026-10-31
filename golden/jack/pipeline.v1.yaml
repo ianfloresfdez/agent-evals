@@ -51,10 +51,13 @@ cases:
 
   - id: failing-suite-blocks
     tags: [policy, guardrail]
-    description: A pre-existing failing test must block the change, whatever the agents say.
+    description: >
+      A failing test must block the change, whatever the agents say. jack's baseline capture (on by default)
+      would classify a failure that already exists on the base branch as pre-existing, so it is off here to
+      test the blocking rule itself.
     input:
       fixture: node-red
-      project: { autoApproveUpTo: low }
+      project: { autoApproveUpTo: low, captureBaseline: false }
       ticket:
         title: Add a formatMoney helper
         description: Add formatMoney(amount, currency, locale) that formats with 2 decimals and the currency symbol.

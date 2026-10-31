@@ -1,0 +1,79 @@
+suite: codegraph-search
+version: 1
+description: >
+  Retrieval quality of codegraph's code search on a real repository (jack, ~2k symbols). Each case
+  is a question a developer or an agent would ask and the file that answers it; a case passes when
+  that file is among the top 5 files codegraph returns. The pass rate is recall@5; the report also
+  keeps the rank, hit@1 and the reciprocal rank of every case. No LLM generation, deterministic for
+  a given repo commit and embedding model.
+target:
+  type: codegraph-search
+  repo: ../../../../jack            # or CODEGRAPH_EVAL_REPO; codegraph must be running (CODEGRAPH_URL)
+  k: 5
+budgets:
+  latency_ms: 20000
+regression:
+  max_pass_rate_drop: 0.0
+  max_latency_p50_increase_pct: 200
+
+cases:
+  - id: risk-score
+    tags: [en]
+    input: { query: "how is the risk score of a change computed", expected_files: [apps/api/src/risk/scorer.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: smartgate-jwt
+    tags: [en]
+    input: { query: "check if the SmartGate JWT is expired", expected_files: [apps/api/src/integrations/smartgate.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: bitbucket-pr
+    tags: [en]
+    input: { query: "open a pull request on Bitbucket Cloud with default reviewers", expected_files: [apps/api/src/integrations/providers.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: bash-guardrails
+    tags: [en]
+    input: { query: "block dangerous shell commands run by the agent", expected_files: [apps/api/src/agent/guardrails.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: playwright-run
+    tags: [en]
+    input: { query: "run the Playwright end-to-end specs and parse the report", expected_files: [apps/api/src/testing/playwright.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: onboarding
+    tags: [en]
+    input: { query: "an agent proposes the configuration for a new local repository", expected_files: [apps/api/src/onboarding.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: jira-transition
+    tags: [en]
+    input: { query: "move the Jira ticket to another status and comment on it", expected_files: [apps/api/src/integrations/jira.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: detect-test-command
+    tags: [en]
+    input: { query: "detect the test command of a project from package.json or composer.json", expected_files: [apps/api/src/testing/runner.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: llm-gateway-env
+    tags: [en]
+    input: { query: "environment for the Claude Code subprocess when using the local gateway", expected_files: [apps/api/src/integrations/llm-gateway.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: es-guardar-runs
+    tags: [es]
+    description: Same kind of question in Spanish (nomic-embed-text is English-first).
+    input: { query: "dónde se guardan las runs y los proyectos en disco", expected_files: [apps/api/src/store.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: es-reintentos-tests
+    tags: [es]
+    input: { query: "reintentar con el agente fix cuando fallan los tests", expected_files: [apps/api/src/pipeline/engine.ts] }
+    expect: { fields: { hit_at_k: true } }
+
+  - id: es-barra-lateral
+    tags: [es, web]
+    input: { query: "barra lateral de la web con el estado de los agentes y el modelo", expected_files: [apps/web/src/components/Layout.tsx] }
+    expect: { fields: { hit_at_k: true } }

@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Read-only token: the jobs only check out code and upload artifacts.
+permissions:
+  contents: read
+
 jobs:
   unit:
     runs-on: ubuntu-latest
@@ -15,35 +19,6 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install -e ".[dev]"
       - run: pytest -q
-
-  # Deterministic contract suite for the jobscout MCP server: no LLM, no secrets.
-  jobscout-tools:
-    needs: unit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with: { repository: ianfloresfdez/jobscout-mcp, path: targets/jobscout-mcp }
-      - uses: actions/setup-node@v4
-        with: { node-version: "22" }
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - name: Build jobscout-mcp
-        working-directory: targets/jobscout-mcp
-        run: npm ci && npm run build
-      - run: pip install -e .
-      - name: Run suite and gate against the committed baseline
-        env:
-          JOBSCOUT_PATH: ${{ github.workspace }}/targets/jobscout-mcp
-          # Cassettes are not committed (third-party listings): CI records a fresh one.
-          AGENT_EVALS_CASSETTE_MODE: auto
-        run: >
-          agent-evals run golden/jobscout/tools.v1.yaml --no-judge --gate
-          --baseline baselines/jobscout-tools.json --skip-metric latency_p50_ms
-          --report report/index.html
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with: { name: jobscout-tools-report, path: report/ }
 
   # jack's pipeline in mock agent mode: real git, tests, risk scorer and policy, no tokens.
   # Needs read access to the jack repo: set the JACK_REPO_TOKEN secret and the RUN_JACK_EVALS variable to "true".
@@ -74,25 +49,3 @@ jobs:
         if: always()
         with: { name: jack-pipeline-report, path: report/ }
 
-  # The LLM agent suite needs a model. Run it by hand on a self-hosted runner that has Ollama.
-  jobscout-agent:
-    if: github.event_name == 'workflow_dispatch' && vars.HAS_OLLAMA_RUNNER == 'true'
-    runs-on: [self-hosted, ollama]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with: { repository: ianfloresfdez/jobscout-mcp, path: targets/jobscout-mcp }
-      - name: Build jobscout-mcp
-        working-directory: targets/jobscout-mcp
-        run: npm ci && npm run build
-      - run: pip install -e .
-      - env:
-          JOBSCOUT_PATH: ${{ github.workspace }}/targets/jobscout-mcp
-          AGENT_EVALS_CASSETTE_MODE: auto
-        run: >
-          agent-evals run golden/jobscout/agent.v1.yaml --gate
-          --baseline baselines/jobscout-agent.json --skip-metric latency_p50_ms
-          --report report/index.html
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with: { name: jobscout-agent-report, path: report/ }

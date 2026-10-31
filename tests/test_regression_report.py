@@ -46,3 +46,21 @@ def test_report_and_cli(tmp_path, run_factory):
     assert res.exit_code == 1 and "regressed: b" in res.output
     res = runner.invoke(app, ["list", "--results", str(results)])
     assert res.exit_code == 0 and res.output.count("demo") == 2
+
+
+def test_cost_and_tokens_from_zero_baseline_regress(run_factory):
+    make_run, make_case = run_factory
+    base = make_run("r1", [make_case("a", tokens=0)])
+    cur = make_run("r2", [make_case("a", tokens=500)])
+    cmp = compare(base, cur, RegressionRules())
+    assert {f.metric for f in cmp.findings if not f.ok} == {"tokens_mean"}
+    assert compare(base, base, RegressionRules()).ok
+
+
+def test_report_without_results_and_compare_without_runs(tmp_path, run_factory):
+    make_run, make_case = run_factory
+    html = build_report(tmp_path / "missing", tmp_path / "out.html").read_text(encoding="utf-8")
+    assert "<html" in html.lower()
+    p = save_run(make_run("r1", [make_case("a")]), tmp_path / "elsewhere")
+    res = CliRunner().invoke(app, ["compare", str(p), "--results", str(tmp_path / "empty")])
+    assert res.exit_code == 2 and "No stored runs" in res.output

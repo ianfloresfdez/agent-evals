@@ -68,6 +68,14 @@ def merge_attempts(results: list[CaseResult]) -> CaseResult:
     })
 
 
+def _run_target(target, case: Case) -> Trace:
+    """One case. A target that raises (API down, unexpected payload) fails that case instead of aborting the run."""
+    try:
+        return target.run(case)
+    except Exception as e:
+        return Trace(error=f"{type(e).__name__}: {e}")
+
+
 def run_suite(suite: Suite, judge: Judge | None = None, on_case: Callable[[CaseResult], None] | None = None,
               repeat: int = 1) -> RunResult:
     started = datetime.now(timezone.utc)
@@ -77,7 +85,7 @@ def run_suite(suite: Suite, judge: Judge | None = None, on_case: Callable[[CaseR
     with target:
         info = target.describe()
         for case in suite.cases:
-            runs = [score_case(case, target.run(case), suite, judge, target.judge_input(case)) for _ in range(max(1, repeat))]
+            runs = [score_case(case, _run_target(target, case), suite, judge, target.judge_input(case)) for _ in range(max(1, repeat))]
             res = merge_attempts(runs)
             results.append(res)
             if on_case:
@@ -104,7 +112,7 @@ EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 
 
 def save_run(run: RunResult, results_dir: Path) -> Path:
-    """Stores the run. Email addresses in agent outputs (job posts often include one) are redacted first."""
+    """Stores the run. Email addresses in agent outputs are redacted first."""
     out = results_dir / run.suite / f"{run.run_id}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(EMAIL.sub("[email]", run.model_dump_json(indent=1)), encoding="utf-8")
