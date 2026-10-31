@@ -32,5 +32,5 @@ def test_rank_counts_files_not_symbols(tmp_path):
 
 
 def test_miss_and_windows_paths(tmp_path):
-    tr = make(tmp_path, [{"file": "a.ts"}, {"file": "b.ts"}, {"file": "d.ts"}, {"file": "z.ts"}]).run(case(["src\z.ts"]))
+    tr = make(tmp_path, [{"file": "a.ts"}, {"file": "b.ts"}, {"file": "d.ts"}, {"file": "z.ts"}]).run(case([r"src\z.ts"]))
     assert tr.data["rank"] is None and not tr.data["hit_at_k"] and tr.data["reciprocal_rank"] == 0.0
