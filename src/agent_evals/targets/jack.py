@@ -17,6 +17,7 @@ JACK_CODEGRAPH_URL for one run, to compare the same suite with and without codeg
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import socket
 import subprocess
@@ -88,6 +89,11 @@ class JackPipelineTarget(Target):
         env.update({k: str(v) for k, v in (self.config.get("env") or {}).items()})
         if "AGENT_EVALS_JACK_CODEGRAPH_URL" in os.environ:
             env["JACK_CODEGRAPH_URL"] = os.environ["AGENT_EVALS_JACK_CODEGRAPH_URL"]
+        # Same suite, another backend: a local model pinned in llm-gateway, or SmartGate (JWT from the environment)
+        if os.environ.get("AGENT_EVALS_JACK_LLM_PROVIDER"):
+            env["JACK_LLM_PROVIDER"] = os.environ["AGENT_EVALS_JACK_LLM_PROVIDER"]
+        if os.environ.get("AGENT_EVALS_JACK_MODEL"):
+            env["LLM_GATEWAY_MODEL"] = os.environ["AGENT_EVALS_JACK_MODEL"]
         self.codegraph = env["JACK_CODEGRAPH_URL"] or None
         self.log = open(self.tmp / "jack.log", "w", encoding="utf-8")
         self.proc = subprocess.Popen(["node", "--import", "tsx", "src/index.ts"], cwd=self.repo / "apps" / "api",
@@ -172,9 +178,32 @@ class JackPipelineTarget(Target):
                                  latency_ms=round((time.perf_counter() - t0) * 1000, 1))
                 time.sleep(0.4)
             latency = (time.perf_counter() - t0) * 1000
-            return self._trace(run, latency)
+            trace = self._trace(run, latency)
+            if case.input.get("hidden_tests"):
+                trace.data["hidden"] = self._hidden_tests(repo, self.resolve(case.input["hidden_tests"]))
+            return trace
         finally:
             self.http.delete(f"/api/projects/{project['id']}")
+
+    @staticmethod
+    def _hidden_tests(repo: Path, src: Path) -> dict[str, Any]:
+        """The case's acceptance test, which the agents never saw, run on the code jack left in the repo."""
+        dest = repo / "test" / "zz-hidden.test.js"
+        dest.parent.mkdir(exist_ok=True)
+        shutil.copy(src, dest)
+        try:
+            r = subprocess.run(["node", "--test", str(dest.relative_to(repo))], cwd=repo, capture_output=True,
+                               text=True, encoding="utf-8", errors="replace", timeout=120)
+            out = r.stdout + r.stderr
+        except subprocess.TimeoutExpired:
+            return {"passed": False, "pass": 0, "fail": 0, "output": "timeout after 120 s"}
+        finally:
+            dest.unlink(missing_ok=True)
+        count = lambda k: int(m.group(1)) if (m := re.search(rf"^# {k} (\d+)", out, re.M)) else 0  # noqa: E731
+        ok, ko = count("pass"), count("fail")
+        failures = "\n".join(re.findall(r"^not ok \d+ - (.+)$", out, re.M))
+        return {"passed": r.returncode == 0 and ko == 0 and ok > 0, "pass": ok, "fail": ko,
+                "output": failures or ("" if r.returncode == 0 else out[-600:])}
 
     def _trace(self, run: dict, latency_ms: float) -> Trace:
         stages = {s["id"]: s["status"] for s in run["stages"]}
@@ -220,6 +249,7 @@ class JackPipelineTarget(Target):
                          "factors": [f["id"] for f in risk.get("factors", [])]},
                 "approval": run.get("approval"),
                 "tests_passed": (run.get("tests") or {}).get("passed"),
+                "tests_removed": "tests-removed" in [f["id"] for f in risk.get("factors", [])],
                 "diff_files": [f["path"] for f in (run.get("diff") or {}).get("files", [])],
                 "branch": run.get("branch"),
                 "mock_tokens_estimate": tokens if self.mode != "live" else None,

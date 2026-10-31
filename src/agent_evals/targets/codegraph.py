@@ -36,11 +36,13 @@ class CodegraphSearchTarget(Target):
             job = self.http.post("/api/index", json={"repo": str(self.repo)}).json()["job"]
         except (httpx.HTTPError, KeyError) as e:
             raise RuntimeError(f"codegraph is not reachable at {self.url} (start it with python ui.py): {e}") from e
-        deadline = time.time() + float(self.config.get("index_timeout_s", 900))
+        started = time.time()
+        deadline = started + float(self.config.get("index_timeout_s", 900))
         while True:
             state = self.http.get(f"/api/jobs/{job}").json()
             if state["phase"] == "done":
                 self.index_stats = state["stats"]
+                self.index_s = round(time.time() - started, 1)
                 break
             if state["phase"] == "error" or time.time() > deadline:
                 raise RuntimeError(f"codegraph could not index {self.repo}: {state.get('error') or 'timeout'}")
@@ -52,8 +54,13 @@ class CodegraphSearchTarget(Target):
 
     def describe(self) -> dict[str, Any]:
         stats = getattr(self, "index_stats", {}) or {}
+        try:  # which embedding model answered, so runs of different models can be told apart
+            embed_model = self.http.get("/api/health").json().get("embed")
+        except (httpx.HTTPError, ValueError, AttributeError):
+            embed_model = None
         return {"type": self.type, "repo": self.repo.name, "repo_sha": git_sha(self.repo), "k": self.k,
-                "symbols": stats.get("symbols"), "files": stats.get("files")}
+                "symbols": stats.get("symbols"), "files": stats.get("files"), "embed_model": embed_model,
+                "index_s": getattr(self, "index_s", None)}
 
     def judge_input(self, case: Case) -> str:
         return case.input["query"]

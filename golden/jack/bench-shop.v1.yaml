@@ -1,0 +1,183 @@
+suite: jack-bench-shop
+version: 1
+description: >
+  Golden set to compare the models behind jack's agents: six realistic tickets (two bugs, three
+  features, one written in Spanish) on bench-shop, a small dependency-free shop domain
+  (fixtures/bench-shop). Each case is scored by a hidden acceptance test the agents never see
+  (bench-shop/<case>/hidden.test.js), run on the code jack leaves behind, next to jack's own
+  verdict. bench-shop/<case>/reference/ is a solution that passes it; tests/test_bench_shop.py
+  checks that every hidden test fails before and passes with the reference.
+
+  Which model answers is decided outside the YAML, so the same suite runs on any backend:
+    AGENT_EVALS_JACK_MODEL=ollama/qwen3-coder-64k agent-evals run golden/jack/bench-shop.v1.yaml --no-judge
+    AGENT_EVALS_JACK_LLM_PROVIDER=smartgate agent-evals run golden/jack/bench-shop.v1.yaml   # needs SMARTGATE_JWT
+  scripts/model-matrix.py runs it for a list of models and writes a comparison table.
+target:
+  type: jack-pipeline
+  path: ../../../../jack        # or JACK_PATH
+  fixtures: fixtures
+  agent_mode: live
+  timeout_s: 3600
+  env:
+    JACK_LLM_PROVIDER: llm-gateway
+    LLM_GATEWAY_URL: http://127.0.0.1:8080
+budgets:
+  latency_ms: 3600000
+regression:
+  max_pass_rate_drop: 0.0
+  max_latency_p50_increase_pct: 50
+rubric: |
+  The text is what jack's pipeline produced for the ticket shown as USER INPUT.
+  - The acceptance criteria must restate the ticket's actual requirement as concrete, testable statements.
+  - The plan must implement that same requirement, not something else.
+  Score 1-2 if the criteria or plan are about a different feature than the ticket asks for.
+
+# Every case: the run must reach the approval gate or ship with green tests, the hidden acceptance
+# test must pass, and the change must not remove existing tests.
+cases:
+  - id: bulk-discount-threshold
+    tags: [bug, easy, single-file]
+    input:
+      fixture: bench-shop
+      hidden_tests: bench-shop/bulk-discount-threshold/hidden.test.js
+      project: { autoApproveUpTo: medium }
+      ticket:
+        key: SHOP-101
+        type: Bug
+        priority: High
+        title: Buying exactly 10 units does not get the bulk discount
+        description: |
+          The bulk discount (10%) is documented as applying to cart lines of BULK_MIN_QTY (10) units or more,
+          but a line of exactly 10 units is charged full price. 11 or more units are discounted correctly.
+
+          Steps: add 10 mugs at 4.00 to a cart. Expected subtotal 36.00, actual 40.00.
+
+          Acceptance criteria:
+          - lineTotal(price, qty) applies the bulk discount when qty >= BULK_MIN_QTY.
+          - Lines below BULK_MIN_QTY keep paying full price.
+          - Add a regression test for exactly 10 units.
+    expect:
+      fields: &verified
+        tests_passed: true
+        hidden.passed: true
+        tests_removed: false
+        status: { any_of: [completed, waiting_approval] }
+
+  - id: format-thousands
+    tags: [bug, easy, single-file]
+    input:
+      fixture: bench-shop
+      hidden_tests: bench-shop/format-thousands/hidden.test.js
+      project: { autoApproveUpTo: medium }
+      ticket:
+        key: SHOP-102
+        type: Bug
+        priority: Medium
+        title: Large amounts are hard to read in money formatting
+        description: |
+          formatMoney(1234.5) returns "1234.50 €". Amounts of a thousand or more must group thousands with a comma.
+
+          Acceptance criteria:
+          - formatMoney(1234.5) returns "1,234.50 €" and formatMoney(1234567.891) returns "1,234,567.89 €".
+          - Amounts under 1000 do not change ("12.50 €"); rounding still goes to 2 decimals (999.999 -> "1,000.00 €").
+          - Negative amounts put the minus sign first: formatMoney(-1500) returns "-1,500.00 €".
+    expect:
+      fields: *verified
+
+  - id: coupon-codes
+    tags: [feature, medium, multi-file]
+    input:
+      fixture: bench-shop
+      hidden_tests: bench-shop/coupon-codes/hidden.test.js
+      project: { autoApproveUpTo: medium }
+      ticket:
+        key: SHOP-103
+        type: Story
+        priority: Medium
+        title: Percentage coupon codes in the cart
+        description: |
+          As a customer I want to enter a coupon code so I get a discount on my order.
+
+          Acceptance criteria:
+          - Export a COUPONS table from the public API (src/index.js): { WELCOME10: 0.10, VIP25: 0.25 } (fraction off).
+          - cart.applyCoupon(code) applies a coupon; codes are case-insensitive; applying a second coupon replaces the first.
+          - An unknown code throws an Error whose message contains "Invalid coupon" and leaves the cart unchanged.
+          - cart.summary() returns a new `discount` field (amount off the subtotal, rounded to cents, 0 without coupon).
+            `subtotal` stays the amount before the discount; tax is computed on (subtotal - discount);
+            total = subtotal - discount + tax.
+          - Example: 2 T-shirts at 20.00 with WELCOME10 -> subtotal 40, discount 4, tax 7.56, total 43.56.
+    expect:
+      fields: *verified
+
+  - id: reserve-stock
+    tags: [feature, hard, multi-file]
+    input:
+      fixture: bench-shop
+      hidden_tests: bench-shop/reserve-stock/hidden.test.js
+      project: { autoApproveUpTo: medium }
+      ticket:
+        key: SHOP-104
+        type: Story
+        priority: High
+        title: Reserve stock when an order is placed
+        description: |
+          Orders are accepted even when we have no stock left. Placing an order must reserve the units, and
+          cancelling it must give them back.
+
+          Acceptance criteria:
+          - orders.place(cart, customer) subtracts each line's qty from the product's `stock` in the catalog.
+          - If any line asks for more units than are in stock, place() throws an OutOfStockError (a subclass of Error,
+            exported from src/index.js) with a `sku` property naming the product. Nothing is reserved, no order is
+            created and the cart is left as it was.
+          - orders.cancel(id) puts the order's units back in stock.
+    expect:
+      fields: *verified
+
+  - id: orders-csv
+    tags: [feature, medium, new-file]
+    input:
+      fixture: bench-shop
+      hidden_tests: bench-shop/orders-csv/hidden.test.js
+      project: { autoApproveUpTo: medium }
+      ticket:
+        key: SHOP-105
+        type: Story
+        priority: Low
+        title: Export orders as CSV
+        description: |
+          Finance wants to download the list of orders.
+
+          Acceptance criteria:
+          - New function ordersToCsv(orders), exported from src/index.js, returns a CSV string.
+          - First line is the header `id,customer,status,total`, then one row per order in the given order.
+          - `total` is written with exactly 2 decimals (24.2 -> 24.20).
+          - Rows are separated by "\n" and there is no trailing newline; an empty list returns only the header.
+          - A field containing a comma, a double quote or a newline is wrapped in double quotes, and double quotes
+            inside it are doubled (Smith, "Bo" -> "Smith, ""Bo""").
+    expect:
+      fields: *verified
+
+  - id: free-shipping-es
+    tags: [feature, medium, spanish, changes-existing-tests]
+    input:
+      fixture: bench-shop
+      hidden_tests: bench-shop/free-shipping-es/hidden.test.js
+      project: { autoApproveUpTo: medium }
+      ticket:
+        key: SHOP-106
+        type: Story
+        priority: Medium
+        title: Gastos de envío gratis a partir de 50 €
+        description: |
+          Queremos cobrar gastos de envío en los pedidos pequeños y regalarlos a partir de 50 €.
+
+          Criterios de aceptación:
+          - Exportar desde src/index.js las constantes SHIPPING_COST = 4.99 y FREE_SHIPPING_FROM = 50.
+          - cart.summary() devuelve un campo nuevo `shipping`: 4.99 si subtotal + IVA es menor que 50, y 0 si es
+            50 o más. Un carrito vacío tiene shipping 0.
+          - El `total` incluye el envío: total = subtotal + tax + shipping.
+          - Los pedidos (orders.place) llevan también `shipping` y el total con envío.
+          - Ejemplo: 1 camiseta de 20 € -> subtotal 20, tax 4.20, shipping 4.99, total 29.19.
+          Ojo: los tests actuales que comprueban totales por debajo de 50 € tendrán que actualizarse.
+    expect:
+      fields: *verified
