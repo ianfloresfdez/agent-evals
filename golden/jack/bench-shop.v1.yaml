@@ -8,19 +8,18 @@ description: >
   verdict. bench-shop/<case>/reference/ is a solution that passes it; tests/test_bench_shop.py
   checks that every hidden test fails before and passes with the reference.
 
-  Which model answers is decided outside the YAML, so the same suite runs on any backend:
-    AGENT_EVALS_JACK_MODEL=ollama/qwen3-coder-64k agent-evals run golden/jack/bench-shop.v1.yaml --no-judge
-    AGENT_EVALS_JACK_LLM_PROVIDER=smartgate agent-evals run golden/jack/bench-shop.v1.yaml   # needs SMARTGATE_JWT
+  Which model answers is decided outside the YAML, so the same suite runs on any SmartGate model:
+    AGENT_EVALS_JACK_MODEL=claude-opus-5-5 agent-evals run golden/jack/bench-shop.v1.yaml --no-judge
+  Without it, jack's configured model answers. Needs SMARTGATE_JWT (environment or jack/.env).
   scripts/model-matrix.py runs it for a list of models and writes a comparison table.
 target:
   type: jack-pipeline
   path: ../../../../jack        # or JACK_PATH
   fixtures: fixtures
   agent_mode: live
-  timeout_s: 1800              # a ticket that needs more than 30 min on a local GPU counts as failed
+  timeout_s: 1800              # a ticket that needs more than 30 min counts as failed
   env:
-    JACK_LLM_PROVIDER: llm-gateway
-    LLM_GATEWAY_URL: http://127.0.0.1:8080
+    JACK_LLM_PROVIDER: smartgate
 budgets:
   latency_ms: 3600000
 regression:

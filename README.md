@@ -4,7 +4,7 @@
 
 It is applied to two real projects:
 
-- **[jack](https://github.com/ianfloresfdez/jack)**: a ticket → code → tests → risk → approval pipeline built on the Claude Agent SDK. Evaluated end to end through its HTTP API, with mock agents and with local agents through [llm-gateway](https://github.com/ianfloresfdez/llm-gateway).
+- **[jack](https://github.com/ianfloresfdez/jack)**: a ticket → code → tests → risk → approval pipeline built on the Claude Agent SDK. Evaluated end to end through its HTTP API, with mock agents and with live agents through SmartGate.
 - **[codegraph](https://github.com/ianfloresfdez/codegraph)**: code search over a tree-sitter graph and local embeddings. Its retrieval quality is measured on its own.
 
 Both targets run unchanged. The harness starts them or calls their HTTP API and never patches their code.
@@ -34,7 +34,6 @@ Measured on a Windows 11 desktop (AMD RX 6800 16 GB, Ollama on Vulkan). Everythi
 | Suite | Target | Cases passed | Tool recall / precision | Judge mean (1-5) | Latency p50 / p95 | Agent tokens (total) |
 |---|---|---|---|---|---|---|
 | `jack-pipeline` v1 | jack API, mock agents | 8/8 | 100% / 100% | 5.00 (negative control: 1) | 9.9 s / 12.2 s | 0 (mock) |
-| `jack-pipeline-live-local` v1 | jack API, gpt-oss-64k via llm-gateway | 2/2 | n/a | off | 464 s / 482 s | not reported by the gateway |
 | `codegraph-search` v1 | codegraph HTTP API, nomic-embed-text | 9/12 (recall@5) | n/a | n/a | under 1 s | 0 |
 
 The jack mock suite's judge (`gemma4:12b`) added 5,204 tokens; the run takes about 2 minutes.
@@ -42,7 +41,7 @@ The jack mock suite's judge (`gemma4:12b`) added 5,204 tokens; the run takes abo
 ### Limits worth knowing
 
 - **The default judge is a local 12B model.** It is free and fast, but lenient: every non-control answer got 5/5. The negative control shows it can say "wrong" (it gave 1/5 to a spec about money formatting for a dark-mode ticket). But in the jack suite it also gave 5/5 to an intake that added a criterion the ticket never asked for ("negative values keep their sign"). For real decisions, run the judge on a stronger model (`--judge openai:…` or `--judge anthropic:…`) and compare.
-- **The mock suite does not measure the agents.** It validates jack's orchestration, guardrails and approval policy. The live-local suite runs real agents, but only two small tickets, because each takes minutes on a consumer GPU.
+- **The mock suite does not measure the agents.** It validates jack's orchestration, guardrails and approval policy.
 - **A handful of cases per suite is a smoke test, not a benchmark.** Expect more cases in the next version of the golden sets.
 
 ## How it works
@@ -127,39 +126,15 @@ Each case copies a fixture repo (`golden/jack/fixtures/`), commits it, registers
 
 Tool calls are read from jack's run log. jack's own commands (test runs, app boot, git delivery) are filtered out so only agent calls count.
 
-### jack with local agents (`golden/jack/pipeline-live-local.v1.yaml`)
-
-The same adapter in `live` mode, with the agents going through
-[llm-gateway](https://github.com/ianfloresfdez/llm-gateway) to a local Ollama model (gpt-oss-64k by
-default): the target passes `JACK_LLM_PROVIDER=llm-gateway` explicitly, so jack's own `.env` does not
-decide what is measured. Two small tickets on the green fixture, QA off; a case passes when the run
-reaches the approval gate (or ships) with green tests. The run records which local model answered.
-
-Run it twice to measure what [codegraph](https://github.com/ianfloresfdez/codegraph)'s context adds
-to the analysis stage (`AGENT_EVALS_JACK_CODEGRAPH_URL=http://127.0.0.1:8790` for the second run),
-and change the gateway's `AGENT_LOCAL_MODEL` to compare local models. Free, but slow: minutes per
-stage on a consumer GPU, so run it without the judge (it would swap models on the GPU every case).
-
-First comparison (gpt-oss-64k, one attempt per case):
-
-| Run | format-money | clamp-helper | p50 |
-|---|---|---|---|
-| without codegraph | pass, 444 s, risk low (21) | pass, 484 s, risk medium (30) | 464 s |
-| with codegraph context | pass, 485 s, risk low (9) | **fail**, 372 s: the agent's tests mixed two test frameworks and the suite failed, risk high (71) | 428 s |
-
-One attempt per case cannot separate codegraph's effect from the model's run-to-run variance: the
-failure is in the tests the agent wrote, not in finding the code. Use `--repeat 3` on both
-settings before drawing a conclusion.
-
 ### codegraph search (`golden/codegraph/search.v1.yaml`)
 
 Retrieval quality of codegraph's code search, which is all an agent sees of a repo before it reads
-files. Twelve questions about jack's codebase (nine in English, three in Spanish), each with the file
+files. Eleven questions about jack's codebase (eight in English, three in Spanish), each with the file
 that answers it; a case passes when that file is in the top 5 (recall@5), and the trace keeps the rank,
 hit@1 and reciprocal rank. The target reindexes the repo through codegraph's HTTP API, then only
 searches: no LLM generation, deterministic for a commit and an embedding model.
 
-First run (jack at `feat/llm-gateway-provider`, `nomic-embed-text`): **recall@5 9/12 (75%)**, hit@1
+First run (`nomic-embed-text`, when the suite had twelve questions): **recall@5 9/12 (75%)**, hit@1
 7/12, MRR 0.65. English 8/9, Spanish 1/3: the embedding model is English-first, and Spanish
 questions drift to `types.ts`, which mentions everything. That is the case for a multilingual
 embedding model, and this suite is how to tell whether switching helps.
@@ -183,14 +158,14 @@ agent-evals run golden/jack/pipeline.v1.yaml                     # mock agents +
 agent-evals run golden/jack/pipeline.v1.yaml --judge openai:gpt-4.1-mini   # another judge
 agent-evals run golden/jack/pipeline.v1.yaml --gate              # exit 1 if worse than the last run
 agent-evals run golden/codegraph/search.v1.yaml --no-judge       # retrieval quality, seconds
-agent-evals run golden/jack/pipeline-live-local.v1.yaml --no-judge   # local agents, ~15 min
+agent-evals run golden/jack/bench-shop.v1.yaml --no-judge        # live agents on SmartGate (needs SMARTGATE_JWT)
 agent-evals run golden/jack/pipeline.v1.yaml --repeat 3          # 3 attempts per case, flaky cases reported
 agent-evals list                                                  # run history
 ```
 
 Every run is saved under `results/` and rebuilds `report/index.html` (all suites, with their history); `--no-report` skips that and `agent-evals report` rebuilds it by hand. Neither folder is committed, so a fresh clone starts with an empty report.
 
-Only the judge and the live-local suite need a model; the mock jack suite and the codegraph suite need no GPU and no key.
+Only the judge and the bench-shop suite need a model; the mock jack suite and the codegraph suite need no GPU and no key.
 
 ### Adding a target
 

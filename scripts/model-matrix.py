@@ -1,14 +1,13 @@
 """Run jack's bench-shop golden set once per model and compare them.
 
-Each model goes through llm-gateway pinned with LLM_GATEWAY_MODEL (any "provider/model" the gateway
-knows, e.g. ollama/qwen3-coder-64k or ollama-reasoning/gpt-oss-64k). The table says, per model: hidden
-acceptance tests passed (the real score), runs jack considered green, tests removed, and time.
+Each model is a SmartGate alias that jack uses for every agent of the run (JACK_MODEL). The table says, per
+model: hidden acceptance tests passed (the real score), runs jack considered green, tests removed, and time.
 
-    python scripts/model-matrix.py ollama-reasoning/gpt-oss-64k ollama/qwen3-coder-64k
-    python scripts/model-matrix.py --case reserve-stock ollama/qwen3-coder-64k      # one case only
-    python scripts/model-matrix.py smartgate                                         # SmartGate, JWT in jack/.env
+    python scripts/model-matrix.py claude-sonnet-5-5 claude-opus-5-5
+    python scripts/model-matrix.py --case reserve-stock claude-haiku-4-5      # one case only
+    python scripts/model-matrix.py default                                    # the model in jack/.env
 
-The special name "smartgate" runs the same suite with JACK_LLM_PROVIDER=smartgate instead of the gateway.
+The JWT comes from the environment or jack/.env.
 Results go to results/jack-bench-shop/ like any other run, and the table to results/model-matrix.md
 (appended, so several sessions build one table).
 """
@@ -30,9 +29,7 @@ RESULTS = ROOT / "results" / "jack-bench-shop"
 
 def run_model(model: str, cases: list[str]) -> dict:
     env = {**os.environ, "PYTHONUTF8": "1"}
-    if model == "smartgate":
-        env["AGENT_EVALS_JACK_LLM_PROVIDER"] = "smartgate"
-    else:
+    if model != "default":
         env["AGENT_EVALS_JACK_MODEL"] = model
     before = set(RESULTS.glob("*.json")) if RESULTS.exists() else set()
     cmd = [sys.executable, "-m", "agent_evals.cli", "run", str(SUITE), "--no-judge", "--no-report"]
@@ -51,7 +48,7 @@ def summarize(model: str, run: dict) -> dict:
     mins = [c["trace"]["latency_ms"] / 60000 for c in cases if c["trace"].get("latency_ms")]
     stage = lambda name: statistics.median([d["stage_ms"][name] / 1000 for d in data.values() if name in d.get("stage_ms", {})] or [0])  # noqa: E731
     return {
-        "model": model if model == "smartgate" else model.split("/", 1)[-1],
+        "model": model,
         "answered_by": run["target"].get("model"),
         "hidden": f"{sum(1 for d in data.values() if (d.get('hidden') or {}).get('passed'))}/{len(cases)}",
         "jack_green": f"{sum(1 for d in data.values() if d.get('tests_passed'))}/{len(cases)}",
